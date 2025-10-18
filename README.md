@@ -1,4 +1,5 @@
 # Integrated Wayang Seni Pujangga Project
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c6b4d992-8da7-47c6-84f7-ac088db5b53b/deploy-status)](https://app.netlify.com/projects/wsp-alpha-v2180/deploys)
 
 ## Overview
 
