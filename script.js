@@ -24,8 +24,13 @@ class NeumorphismLoginForm {
     this.currentPin = "";
     this.validPins = []; // Will be validated via Supabase RPC
 
+    // Session State
+    this.sessionId = null;
+    this.currentLoginType = null;
+
     // Supabase
     this.supabase = null;
+    this.supabaseUrl = "https://uxcxnidgebtrgggmvyph.supabase.co";
 
     this.init();
   }
@@ -38,6 +43,9 @@ class NeumorphismLoginForm {
     this.initGuestMode();
     this.initSupabase();
     this.checkInitialSession();
+
+    // Add session close listener
+    window.addEventListener('beforeunload', this.handleSessionClose.bind(this));
   }
 
   bindEvents() {
@@ -232,7 +240,9 @@ class NeumorphismLoginForm {
       if (error) throw error;
 
       console.log("Login success:", data);
+      this.currentLoginType = 'email';
       this.showNeumorphicSuccess();
+      this.createSession();
     } catch (error) {
       console.error("Login error:", error);
       this.showError("password", "Login failed. Please try again.");
@@ -354,6 +364,7 @@ class NeumorphismLoginForm {
         } else {
           this.showNeumorphicSuccess();
         }
+        this.createSession();
         this.scheduleRedirect();
       } else if (event === "SIGNED_OUT") {
         console.log("User signed out");
@@ -428,7 +439,9 @@ class NeumorphismLoginForm {
         if (sessionError) throw sessionError;
 
         console.log("Guest session created:", sessionData);
+        this.currentLoginType = 'guest_pin';
         this.showPinSuccess();
+        this.createSession();
         this.scheduleRedirect();
       } else {
         this.showPinError();
@@ -476,10 +489,60 @@ class NeumorphismLoginForm {
       const { data: { session } } = await this.supabase.auth.getSession();
       if (session) {
         console.log("Existing session detected, redirecting...");
+        this.sessionId = localStorage.getItem('sessionId');
+        if (this.sessionId) {
+          // Optionally re-open or update session, but for now redirect
+        }
         this.scheduleRedirect();
       }
     } catch (error) {
       console.error("Error checking initial session:", error);
+    }
+  }
+
+  async createSession() {
+    if (!this.supabase || !this.currentLoginType) return;
+
+    const guestPin = this.currentLoginType === 'guest_pin' ? this.currentPin : null;
+
+    try {
+      const { data: { session } } = await this.supabase.auth.getSession();
+      if (!session) return;
+
+      const response = await fetch(`${this.supabaseUrl}/functions/v1/create-session`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          login_type: this.currentLoginType,
+          guest_pin: guestPin
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Edge Function error: ${response.statusText}`);
+      }
+
+      const { session_id } = await response.json();
+      this.sessionId = session_id;
+      localStorage.setItem('sessionId', this.sessionId);
+      console.log('Session created:', this.sessionId);
+    } catch (error) {
+      console.error('Failed to create session:', error);
+      // Fallback: Proceed without session tracking
+    }
+  }
+
+  handleSessionClose() {
+    if (this.sessionId && this.supabase) {
+      this.supabase.rpc('close_session', { p_session_id: this.sessionId })
+        .then(() => {
+          console.log('Session closed:', this.sessionId);
+          localStorage.removeItem('sessionId');
+        })
+        .catch((error) => console.error('Failed to close session:', error));
     }
   }
 
@@ -506,7 +569,8 @@ class NeumorphismLoginForm {
         redirectTo: window.location.origin // Redirect back to current page after auth
       }
     }).then(() => {
-      // On success, the onAuthStateChange will handle
+      // On success, the onAuthStateChange will handle createSession
+      this.currentLoginType = `oauth_${provider}`;
     }).catch((error) => {
       console.error(`${provider} OAuth error:`, error);
       this.showPinError(); // Show error if fails
