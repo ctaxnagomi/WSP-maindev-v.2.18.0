@@ -112,3 +112,28 @@ The project uses a custom semantic versioning for the workspace name and tags: W
 - **3.0.0**: Server-side auth, synced watchlists, real streaming integration.
 
 For issues or contributions, see [README.md](README.md#contributing).
+
+
+Next
+
+e.g. workflow (user)
+
+user click “Guest(frontend)” href text -> redirect to (keypad.form) -> if user(input)= valid (guest-pins) -> Success -> main.html
+
+
+e.g. workflow (backend-database/supabase/postgresql)
+
+visitor click “Guest(frontend)” href text -> redirect to (keypad.form) -> if  visitor(input)= valid (guest-pins) ->  record data + screenshot on every “success” into “wsp_table-scheme.dbl formate” -> Success -> main.html
+
+wsp_table-scheme
+
+e.g.
+
+(uid), (registered user?), (timestamp), (status), (guest_pins), (Oauth?)
+
+on every “success” access to main.html, start “sessionID” until the visitor/user close the site. 
+
+Create wsp-main-database:
+
+(uid), (sessionID), (registered user?), (timestamp), (status), (guest_pins), (Oauth?), (total accumulate visit), (total duration siteview)
+
