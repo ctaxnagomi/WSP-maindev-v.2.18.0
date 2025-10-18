@@ -89,25 +89,25 @@ No external dependencies beyond CDNs (FontAwesome, Google Fonts) and Supabase/TM
 
 ```mermaid
 graph TD
-    A[User Access] --> B{"Auth Check\n(Supabase Session)"}
-    B -->|No Session| C["Login Gateway\nindex.html"]
-    C --> D["Email/Password Form\nNeumorphismForm JS"]
-    C --> E["Social OAuth Buttons\nGoogle/GitHub/Twitter"]
-    C --> F["Guest PIN Keypad\nctaxnagomi Mod\nvalidate_pin RPC"]
-    D --> G["Validation & Submit\nReal-time Checks"]
+    A[User Access] --> B{"Auth Check (Supabase Session)"}
+    B -->|No Session| C["Login Gateway index.html"]
+    C --> D["Email/Password Form NeumorphismForm JS"]
+    C --> E["Social OAuth Buttons Google/GitHub/Twitter"]
+    C --> F["Guest PIN Keypad ctaxnagomi Mod validate_pin RPC"]
+    D --> G["Validation & Submit Real-time Checks"]
     E --> G
     F --> G
-    G -->|Success| H["Supabase Auth\nCreate Session"]
-    H --> I["Redirect to Streaming\nmain.html"]
+    G -->|Success| H["Supabase Auth Create Session"]
+    H --> I["Redirect to Streaming main.html"]
     B -->|Session Valid| I
-    I --> J["Navbar & Profiles\nnavbar.js, profile-watchlist.js"]
-    J --> K["Search Bar\nTMDB API Fetch\nsearch-player.js"]
-    K --> L["Carousels & Filters\nGenres, Top-Rated\ncarousel.js"]
-    L --> M["Movie/TV Detail Modal\nMetadata Display"]
-    M --> N["Watchlist Add/Remove\nlocalStorage"]
-    N --> O["Playback Iframe\nvidnest.fun\nsplayer-*.html"]
-    O --> P["Resume Progress\nlocalStorage Save\npostMessage Seek"]
-    P --> Q["Error Handling\nTry-Catch, Alerts"]
+    I --> J["Navbar & Profiles navbar.js, profile-watchlist.js"]
+    J --> K["Search Bar TMDB API Fetch search-player.js"]
+    K --> L["Carousels & Filters Genres, Top-Rated carousel.js"]
+    L --> M["Movie/TV Detail Modal Metadata Display"]
+    M --> N["Watchlist Add/Remove localStorage"]
+    N --> O["Playback Iframe vidnest.fun splayer-*.html"]
+    O --> P["Resume Progress localStorage Save postMessage Seek"]
+    P --> Q["Error Handling Try-Catch, Alerts"]
     style C fill:#e0e5ec
     style I fill:#bec3cf
     style O fill:#ffffff
@@ -117,15 +117,15 @@ graph TD
 
 ```mermaid
 flowchart TD
-    A[Develop Features/Edits] --> B["modifyws Branch\n.0 Commit"]
+    A[Develop Features/Edits] --> B["modifyws Branch .0 Commit"]
     B --> C[Test & Debug]
-    C --> D["debugreport or bugfix Branch\nPatch Increment\n(e.g., +1 per fix,\n+3 daily → v2.18.4)"]
+    C --> D["debugreport or bugfix Branch Patch Increment (e.g., +1 per fix, +3 daily → v2.18.4)"]
     D --> E[Staging Review]
-    E --> F["preview Branch\n.0 Commit"]
+    E --> F["preview Branch .0 Commit"]
     F --> G[Merge & Deploy]
-    G --> H["prod Branch\n.0 Commit"]
-    H --> I["Release Tag\ne.g., v2.18.0 or v2.18.1"]
-    I --> J["main Branch for Base\n.0 Commit"]
+    G --> H["prod Branch .0 Commit"]
+    H --> I["Release Tag e.g., v2.18.0 or v2.18.1"]
+    I --> J["main Branch for Base .0 Commit"]
     style B fill:#f9f
     style D fill:#ff9
     style F fill:#9f9
