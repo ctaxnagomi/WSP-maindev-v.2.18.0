@@ -15,7 +15,7 @@ You need to create the checks first, then add them to the ruleset. Here's the or
 ### Step 1: Set Up Netlify Integration (Easiest - 5 minutes)
 
 1. **Connect Netlify to your GitHub repository:**
-   - Go to https://app.netlify.com
+   - Go to <https://app.netlify.com>
    - Click "Add new site" > "Import an existing project"
    - Choose "GitHub" and authorize Netlify
    - Select your WSP repository
@@ -45,6 +45,7 @@ You need to create the checks first, then add them to the ruleset. Here's the or
 ### Step 2: Set Up GitHub Actions (Basic CI - 10 minutes)
 
 1. **Create the workflows directory:**
+
    ```bash
    mkdir -p .github/workflows
    ```
@@ -154,8 +155,9 @@ jobs:
             echo "No TypeScript files to check"
           fi
 ```
-
+<!--
 3. **Commit and push the workflow:**
+
    ```bash
    git add .github/workflows/ci.yml
    git commit -m "ci: add GitHub Actions workflow"
@@ -211,46 +213,51 @@ Now that you have status checks running, you can add them to a ruleset.
      - Repeat for `main` if you use it
 
 3. **Configure Branch Protection Rules:**
-   
+
    Scroll down and enable these rules:
 
    #### A. Restrict deletions
+
    - ✅ Enable this rule
    - This prevents accidental deletion of production branch
 
    #### B. Require a pull request before merging
+
    - ✅ Enable this rule
    - **Required approvals:** `1` (or more if you have a team)
    - ✅ Dismiss stale pull request approvals when new commits are pushed
    - ✅ Require review from Code Owners (if you have CODEOWNERS file)
 
    #### C. Require status checks to pass
+
    - ✅ Enable this rule
    - ✅ **Require branches to be up to date before merging**
    - ⚠️ **Do NOT check** "Do not require status checks on creation"
-   
+
    - **Add status checks:** Click "Add checks"
      - You'll see a search box
      - Start typing the check names and select them:
-       
+
        **Essential checks (select these):**
        1. `netlify/deploy-preview` (or `netlify/build`)
        2. `lint-javascript`
        3. `validate-html`
        4. `check-typescript`
-       
+
        **If they appear in the list, also add:**
        5. `secret-scanning` (if enabled)
-       
+
      - Click each one to add it to the required list
 
 4. **Additional Recommended Rules:**
-   
+
    #### D. Require linear history
+
    - ✅ Enable this rule
    - Prevents merge commits, keeps history clean
 
    #### E. Block force pushes
+
    - ✅ Enable this rule
    - Prevents destructive force pushes to prod
 
@@ -312,6 +319,7 @@ For `modifyws`, `debugreport`, `bugfix` branches:
 ### Test 2: Try to Merge Without Checks Passing
 
 1. Create a test branch with an error:
+
    ```bash
    git checkout -b test-ruleset
    echo "console.log('test'" >> script.js  # Intentional syntax error
@@ -327,6 +335,7 @@ For `modifyws`, `debugreport`, `bugfix` branches:
    > "Required status check 'lint-javascript' is expected"
 
 6. Fix the error:
+
    ```bash
    git checkout test-ruleset
    git restore script.js
@@ -342,6 +351,7 @@ For `modifyws`, `debugreport`, `bugfix` branches:
 ### Test 3: Verify Production Protection
 
 1. Try to push directly to `prod`:
+
    ```bash
    git checkout prod
    git pull origin prod
@@ -363,6 +373,7 @@ For `modifyws`, `debugreport`, `bugfix` branches:
 ### Problem: "No required checks" appears when creating ruleset
 
 **Solution:** You need to run the checks at least once first:
+
 1. Make sure GitHub Actions workflow is committed to your repository
 2. Create a test pull request to trigger the workflows
 3. Wait for checks to complete
@@ -371,11 +382,13 @@ For `modifyws`, `debugreport`, `bugfix` branches:
 ### Problem: Status check names don't appear in search
 
 **Possible causes:**
+
 1. **Workflow hasn't run yet** - Create a PR to trigger it
 2. **Workflow has errors** - Check Actions tab for failures
 3. **Wrong job/check name** - Check the workflow file for actual job names
 
 **How to find check names:**
+
 1. Go to any recent pull request
 2. Scroll to the bottom "Checks" section
 3. The exact names listed there are what you should add to the ruleset
@@ -383,6 +396,7 @@ For `modifyws`, `debugreport`, `bugfix` branches:
 ### Problem: Netlify checks not appearing
 
 **Solution:**
+
 1. Verify Netlify is connected to your GitHub repository
 2. Check Netlify site settings > Build & deploy > Deploy contexts
 3. Ensure "Deploy previews" is enabled
@@ -392,6 +406,7 @@ For `modifyws`, `debugreport`, `bugfix` branches:
 ### Problem: Checks pass but merge still blocked
 
 **Possible causes:**
+
 1. **Branch is not up to date** - "Require branches to be up to date" is enabled
    - Solution: Click "Update branch" button before merging
 2. **Different check name** - The ruleset expects exact name match
@@ -403,15 +418,18 @@ For `modifyws`, `debugreport`, `bugfix` branches:
 
 Based on the workflows created above, your exact check names are:
 
-### From Netlify:
+### From Netlify
+
 - `netlify/deploy-preview` (or `netlify/build`)
 
-### From GitHub Actions (.github/workflows/ci.yml):
+### From GitHub Actions (.github/workflows/ci.yml)
+
 - `lint-javascript` (job name in workflow)
 - `validate-html` (job name in workflow)
 - `check-typescript` (job name in workflow)
 
-### From GitHub Settings:
+### From GitHub Settings
+
 - `secret-scanning` (if enabled in settings)
 
 ---
@@ -445,11 +463,11 @@ When you see this in GitHub ruleset settings:
   Choose which status checks must pass before the ref is updated.
   
   ☐ Require branches to be up to date before merging
-     Whether pull requests targeting a matching branch must be 
+     Whether pull requests targeting a matching branch must be
      tested with the latest code.
   
   ☐ Do not require status checks on creation
-     Allow repositories and branches to be created if a check 
+     Allow repositories and branches to be created if a check
      would otherwise prohibit it.
   
   No required checks
@@ -457,17 +475,20 @@ When you see this in GitHub ruleset settings:
 ```
 
 **Check these boxes:**
+
 - ✅ **Require status checks to pass** (enable the rule)
 - ✅ **Require branches to be up to date before merging** (recommended)
 - ⬜ **Do not require status checks on creation** (leave UNCHECKED)
 
 **Then click "Add checks" button and select:**
+
 1. `netlify/deploy-preview`
 2. `lint-javascript`
 3. `validate-html`
 4. `check-typescript`
 
 After adding, you'll see:
+
 ```
 ✓ Required checks: 4 checks
   - netlify/deploy-preview
@@ -481,6 +502,7 @@ After adding, you'll see:
 ## Summary
 
 **The correct order is:**
+
 1. ✅ Set up Netlify integration → Creates `netlify/*` checks
 2. ✅ Create GitHub Actions workflow → Creates CI checks  
 3. ✅ Make a test PR to run checks once → Registers them with GitHub

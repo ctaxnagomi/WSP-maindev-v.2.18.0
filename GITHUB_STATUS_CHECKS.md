@@ -17,12 +17,14 @@ This document provides a comprehensive list of recommended status checks to add 
 ### 1. Deployment & Build Checks
 
 #### **Netlify Deploy Preview**
+
 - **Check Name**: `netlify/deploy-preview`
 - **Purpose**: Ensures deployment preview builds successfully before merging
 - **Required**: Yes
 - **Why**: Validates that changes won't break production deployment
 
 #### **Netlify Build**
+
 - **Check Name**: `netlify/build`
 - **Purpose**: Verifies build process completes without errors
 - **Required**: Yes
@@ -33,17 +35,19 @@ This document provides a comprehensive list of recommended status checks to add 
 ### 2. Code Quality Checks
 
 #### **HTML Validation**
+
 - **Check Name**: `html-validation`
 - **Tool**: HTML5 Validator (W3C Validator or html-validate)
 - **Purpose**: Validates HTML syntax and semantic correctness
 - **Required**: Yes
-- **Files to Check**: 
+- **Files to Check**:
   - [`index.html`](index.html)
   - [`wsp-assets/main.html`](wsp-assets/main.html)
   - [`wsp-assets/frontend/*.html`](wsp-assets/frontend/)
 - **Setup**: GitHub Action with `html-validate` or W3C validator API
 
 #### **CSS Linting**
+
 - **Check Name**: `stylelint`
 - **Tool**: Stylelint
 - **Purpose**: Ensures CSS follows best practices and conventions
@@ -54,6 +58,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Setup**: GitHub Action with Stylelint configuration
 
 #### **JavaScript Linting**
+
 - **Check Name**: `eslint`
 - **Tool**: ESLint
 - **Purpose**: Validates JavaScript code quality and catches errors
@@ -64,6 +69,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Setup**: GitHub Action with ESLint + ES6 parser
 
 #### **TypeScript Compilation**
+
 - **Check Name**: `typescript-check`
 - **Tool**: TypeScript Compiler (tsc)
 - **Purpose**: Validates Supabase Edge Function TypeScript code
@@ -77,6 +83,7 @@ This document provides a comprehensive list of recommended status checks to add 
 ### 3. Security Checks
 
 #### **Secret Scanning**
+
 - **Check Name**: `secret-scanning`
 - **Tool**: GitHub Secret Scanning (built-in) or TruffleHog
 - **Purpose**: Detects accidentally committed API keys, tokens, passwords
@@ -88,6 +95,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Setup**: Enable in GitHub repository settings > Security > Secret scanning
 
 #### **Dependency Security Audit**
+
 - **Check Name**: `dependency-audit`
 - **Tool**: npm audit (if package.json added) or OWASP Dependency-Check
 - **Purpose**: Identifies vulnerabilities in dependencies
@@ -96,6 +104,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Setup**: GitHub Action with `npm audit` or Dependabot alerts
 
 #### **SAST (Static Application Security Testing)**
+
 - **Check Name**: `codeql-analysis`
 - **Tool**: GitHub CodeQL or SonarCloud
 - **Purpose**: Detects security vulnerabilities in JavaScript/TypeScript code
@@ -104,6 +113,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Setup**: GitHub Code Scanning in Security tab
 
 #### **SQL Injection Prevention**
+
 - **Check Name**: `sql-security-check`
 - **Tool**: Custom script or Semgrep
 - **Purpose**: Reviews SQL files for injection vulnerabilities
@@ -118,6 +128,7 @@ This document provides a comprehensive list of recommended status checks to add 
 ### 4. Testing Checks
 
 #### **Unit Tests**
+
 - **Check Name**: `unit-tests`
 - **Tool**: Jest or Vitest (if implemented)
 - **Purpose**: Validates individual function/module correctness
@@ -126,6 +137,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Future Setup**: GitHub Action with `npm test`
 
 #### **Integration Tests**
+
 - **Check Name**: `integration-tests`
 - **Tool**: Cypress or Playwright
 - **Purpose**: Validates end-to-end user flows
@@ -137,6 +149,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Future Setup**: GitHub Action with browser testing framework
 
 #### **Accessibility Tests**
+
 - **Check Name**: `accessibility-check`
 - **Tool**: axe-core or Pa11y
 - **Purpose**: Ensures WCAG AA compliance
@@ -149,6 +162,7 @@ This document provides a comprehensive list of recommended status checks to add 
 ### 5. Performance Checks
 
 #### **Lighthouse CI**
+
 - **Check Name**: `lighthouse-ci`
 - **Tool**: Lighthouse CI
 - **Purpose**: Validates performance, accessibility, SEO metrics
@@ -161,6 +175,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Setup**: GitHub Action with Lighthouse CI configuration
 
 #### **Bundle Size Check**
+
 - **Check Name**: `bundle-size-limit`
 - **Tool**: bundlesize or custom script
 - **Purpose**: Prevents CSS/JS bloat
@@ -173,6 +188,7 @@ This document provides a comprehensive list of recommended status checks to add 
 ### 6. Documentation Checks
 
 #### **Markdown Linting**
+
 - **Check Name**: `markdownlint`
 - **Tool**: markdownlint-cli
 - **Purpose**: Ensures consistent markdown formatting
@@ -185,6 +201,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Setup**: GitHub Action with `markdownlint-cli`
 
 #### **Link Validation**
+
 - **Check Name**: `link-check`
 - **Tool**: markdown-link-check
 - **Purpose**: Validates internal and external links in documentation
@@ -196,6 +213,7 @@ This document provides a comprehensive list of recommended status checks to add 
 ### 7. Git Workflow Checks
 
 #### **Commit Message Validation**
+
 - **Check Name**: `commitlint`
 - **Tool**: commitlint
 - **Purpose**: Enforces conventional commit message format
@@ -204,6 +222,7 @@ This document provides a comprehensive list of recommended status checks to add 
 - **Setup**: GitHub Action with `commitlint`
 
 #### **Branch Naming Convention**
+
 - **Check Name**: `branch-naming`
 - **Tool**: Custom GitHub Action
 - **Purpose**: Enforces branch naming per Git Workflow (modifyws, debugreport, preview, prod)
@@ -216,7 +235,9 @@ This document provides a comprehensive list of recommended status checks to add 
 ## Priority Recommendations by Branch
 
 ### For `prod` Branch (Production)
+
 **REQUIRED** - Block merge if failed:
+
 1. ✅ `netlify/deploy-preview`
 2. ✅ `netlify/build`
 3. ✅ `secret-scanning`
@@ -225,28 +246,35 @@ This document provides a comprehensive list of recommended status checks to add 
 6. ✅ `typescript-check`
 
 **RECOMMENDED**:
+
 - `lighthouse-ci` (performance)
 - `codeql-analysis` (security)
 - `accessibility-check`
 
 ### For `preview` Branch (Staging)
+
 **REQUIRED**:
+
 1. ✅ `netlify/deploy-preview`
 2. ✅ `html-validation`
 3. ✅ `eslint`
 4. ✅ `typescript-check`
 
 **RECOMMENDED**:
+
 - `stylelint`
 - `secret-scanning`
 - `integration-tests` (if implemented)
 
 ### For `modifyws` / `debugreport` / `bugfix` Branches (Development)
+
 **REQUIRED**:
+
 1. ✅ `eslint`
 2. ✅ `typescript-check`
 
 **RECOMMENDED**:
+
 - `html-validation`
 - `stylelint`
 - `unit-tests` (if implemented)
@@ -256,6 +284,7 @@ This document provides a comprehensive list of recommended status checks to add 
 ## Implementation Steps
 
 ### Step 1: Enable GitHub Built-in Checks
+
 1. Navigate to **Repository Settings > Security**
 2. Enable:
    - Secret scanning
@@ -263,9 +292,11 @@ This document provides a comprehensive list of recommended status checks to add 
    - Code scanning (CodeQL)
 
 ### Step 2: Create GitHub Actions Workflows
+
 Create `.github/workflows/` directory with these files:
 
 #### `ci.yml` - Main CI Pipeline
+
 ```yaml
 name: CI Pipeline
 
@@ -310,6 +341,7 @@ jobs:
 ```
 
 #### `security.yml` - Security Checks
+
 ```yaml
 name: Security Checks
 
@@ -335,6 +367,7 @@ jobs:
 ```
 
 #### `lighthouse.yml` - Performance Checks
+
 ```yaml
 name: Lighthouse CI
 
@@ -356,6 +389,7 @@ jobs:
 ```
 
 ### Step 3: Configure Ruleset in GitHub
+
 1. Go to **Repository Settings > Rules > Rulesets**
 2. Click **New ruleset** > **New branch ruleset**
 3. Name: "Production Protection"
@@ -375,6 +409,7 @@ jobs:
    - ✅ Require pull request reviews (1+ approvals)
 
 ### Step 4: Netlify Integration
+
 1. In Netlify site settings, enable:
    - **Deploy Previews** for all pull requests
    - **Build notifications** to GitHub
@@ -388,11 +423,13 @@ jobs:
 
 If you want to start with essential checks only:
 
-### Required Checks for `prod` Branch:
+### Required Checks for `prod` Branch
+
 1. **netlify/deploy-preview** (auto-enabled with Netlify)
 2. **netlify/build** (auto-enabled with Netlify)
 
-### Add Basic CI (10 minutes setup):
+### Add Basic CI (10 minutes setup)
+
 1. Create `.github/workflows/ci.yml` with linting (see Step 2 above)
 2. Enable Secret Scanning in GitHub settings
 3. Configure branch protection with these 4 checks
@@ -404,6 +441,7 @@ This provides basic safety without overwhelming setup.
 ## Testing Your Configuration
 
 Before enforcing checks on `prod`:
+
 1. Create test PR from `modifyws` to `preview`
 2. Verify all checks run and report correctly
 3. Intentionally introduce errors to test failure handling

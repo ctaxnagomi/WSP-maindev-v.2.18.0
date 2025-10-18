@@ -7,6 +7,7 @@ I've created a complete GitHub Actions CI/CD pipeline with status checks for you
 ### Files Created
 
 #### 1. GitHub Actions Workflows
+
 - **[`.github/workflows/ci.yml`](.github/workflows/ci.yml)** - Main CI pipeline with 4 jobs:
   - `lint-javascript` - JavaScript code quality checks
   - `validate-html` - HTML validation
@@ -18,12 +19,14 @@ I've created a complete GitHub Actions CI/CD pipeline with status checks for you
   - `dependency-check` - Checks for vulnerable dependencies (if package.json exists)
 
 #### 2. Linting Configuration Files
+
 - **[`.eslintrc.json`](.eslintrc.json)** - ESLint configuration for JavaScript
 - **[`.htmlvalidate.json`](.htmlvalidate.json)** - HTML validation rules
 - **[`.stylelintrc.json`](.stylelintrc.json)** - Stylelint configuration for CSS
 - **[`.gitignore`](.gitignore)** - Standard gitignore for Node.js projects
 
 #### 3. Documentation
+
 - **[`GITHUB_STATUS_CHECKS.md`](GITHUB_STATUS_CHECKS.md)** - Complete reference of all available checks
 - **[`GITHUB_RULESET_SETUP_GUIDE.md`](GITHUB_RULESET_SETUP_GUIDE.md)** - Step-by-step setup instructions
 
@@ -83,7 +86,7 @@ git push origin modifyws
 
 If you haven't already:
 
-1. Go to https://app.netlify.com
+1. Go to <https://app.netlify.com>
 2. Click "Add new site" > "Import an existing project"
 3. Choose GitHub and authorize
 4. Select your WSP repository
@@ -96,6 +99,7 @@ If you haven't already:
    - Enable "Deploy previews" for all pull requests
 
 **Result:** Netlify will add these checks to your PRs:
+
 - `netlify/deploy-preview`
 - `netlify/build`
 
@@ -116,9 +120,9 @@ If you haven't already:
 3. Configure:
 
    **Ruleset name:** `Production Protection`
-   
+
    **Enforcement status:** Active
-   
+
    **Target branches:**
    - Click "Add target"
    - Select "Include by pattern"
@@ -129,14 +133,17 @@ If you haven't already:
 4. **Enable these rules:**
 
    #### ☑️ Restrict deletions
+
    - Check this box
-   
+
    #### ☑️ Require a pull request before merging
+
    - Check this box
    - Required approvals: `1`
    - ☑️ Dismiss stale pull request approvals when new commits are pushed
-   
+
    #### ☑️ Require status checks to pass before merging
+
    - Check this box
    - ☑️ **Require branches to be up to date before merging**
    - Click "Add checks" and select:
@@ -146,11 +153,13 @@ If you haven't already:
      - `check-typescript`
      - `lint-css`
      - `secret-scan`
-   
+
    #### ☑️ Block force pushes
+
    - Check this box
-   
+
    #### ☑️ Require linear history
+
    - Check this box (optional but recommended)
 
 5. Click **Create** at the bottom
@@ -161,7 +170,8 @@ If you haven't already:
 
 After setup, every pull request will show:
 
-### From GitHub Actions:
+### From GitHub Actions
+
 - ✅ **lint-javascript** - JavaScript code quality
 - ✅ **validate-html** - HTML structure validation
 - ✅ **check-typescript** - TypeScript type safety
@@ -169,11 +179,13 @@ After setup, every pull request will show:
 - ✅ **secret-scan** - Security scanning
 - ✅ **dependency-check** - Dependency vulnerabilities
 
-### From Netlify:
+### From Netlify
+
 - ✅ **netlify/deploy-preview** - Preview deployment status
 - ✅ **netlify/build** - Build process status
 
-### From GitHub Settings:
+### From GitHub Settings
+
 - ✅ **secret-scanning** - Repository-level secret detection
 
 ---
@@ -185,6 +197,7 @@ After setup, every pull request will show:
 **Cause:** Checks haven't run yet
 
 **Solution:**
+
 1. Make sure you've pushed the workflow files to GitHub
 2. Create a test PR to trigger the workflows
 3. Wait for workflows to complete
@@ -193,6 +206,7 @@ After setup, every pull request will show:
 ### Issue 2: JavaScript linting fails
 
 **Likely errors:**
+
 - Undefined variables (e.g., `supabase` not recognized)
 - Missing semicolons
 - Console statements
@@ -203,6 +217,7 @@ The workflow is set to continue even with warnings. Check the logs and fix criti
 ### Issue 3: HTML validation fails
 
 **Common issues:**
+
 - Unclosed tags
 - Invalid attributes
 - Accessibility issues
@@ -220,6 +235,7 @@ Make sure Supabase function has proper imports. The workflow will skip if no Typ
 ### Issue 5: CSS linting fails
 
 **Common issues:**
+
 - Color format inconsistencies
 - Specificity conflicts
 - Vendor prefixes
@@ -231,13 +247,15 @@ The configuration is lenient. Address critical errors first.
 
 ## 📊 Viewing Check Results
 
-### In Pull Requests:
+### In Pull Requests
+
 1. Open any PR
 2. Scroll to "Checks" section at the bottom
 3. Click on any check to see detailed logs
 4. Green ✓ = passed, Red ✗ = failed
 
-### In GitHub Actions Tab:
+### In GitHub Actions Tab
+
 1. Go to repository > Actions
 2. Click on any workflow run
 3. Click on individual jobs to see logs
@@ -247,8 +265,10 @@ The configuration is lenient. Address critical errors first.
 
 ## 🎛️ Customizing the Configuration
 
-### To Change JavaScript Rules:
+### To Change JavaScript Rules
+
 Edit [`.eslintrc.json`](.eslintrc.json):
+
 ```json
 {
   "rules": {
@@ -258,8 +278,10 @@ Edit [`.eslintrc.json`](.eslintrc.json):
 }
 ```
 
-### To Change HTML Rules:
+### To Change HTML Rules
+
 Edit [`.htmlvalidate.json`](.htmlvalidate.json):
+
 ```json
 {
   "rules": {
@@ -268,8 +290,10 @@ Edit [`.htmlvalidate.json`](.htmlvalidate.json):
 }
 ```
 
-### To Change CSS Rules:
+### To Change CSS Rules
+
 Edit [`.stylelintrc.json`](.stylelintrc.json):
+
 ```json
 {
   "rules": {
@@ -278,8 +302,10 @@ Edit [`.stylelintrc.json`](.stylelintrc.json):
 }
 ```
 
-### To Change When Workflows Run:
+### To Change When Workflows Run
+
 Edit [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
+
 ```yaml
 on:
   pull_request:
@@ -313,17 +339,20 @@ on:
 
 ## 📈 Maintenance
 
-### Weekly:
+### Weekly
+
 - Review failed checks in PRs
 - Update linting rules if needed
 - Check security scan results
 
-### Monthly:
+### Monthly
+
 - Review ruleset effectiveness
 - Update Node.js version in workflows (currently 20)
 - Adjust check strictness based on team needs
 
-### Quarterly:
+### Quarterly
+
 - Update GitHub Actions versions (@v4 → @v5)
 - Review and optimize workflow performance
 - Update documentation
@@ -342,13 +371,15 @@ on:
 
 ## ✨ What This Gives You
 
-### Before:
+### Before
+
 - ❌ No code quality checks
 - ❌ No automatic validation
 - ❌ Manual security review needed
 - ❌ Easy to push broken code to production
 
-### After:
+### After
+
 - ✅ Automatic code quality validation
 - ✅ HTML/CSS/JavaScript linting
 - ✅ Security scanning for leaked secrets
@@ -373,6 +404,7 @@ If you encounter issues:
 ## 🎉 Summary
 
 You now have a professional CI/CD pipeline with:
+
 - **6 automated status checks** (JavaScript, HTML, CSS, TypeScript, Security, Dependencies)
 - **2 Netlify checks** (after connection)
 - **Complete linting configurations**
