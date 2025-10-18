@@ -62,18 +62,30 @@ Top-level (Login Gateway):
 
 Subdirectory (Streaming Site - v2.0.0 base):
 
-- `Wayang-Seni-Pujangga-main-v.2.0.0-main/`
-  - [`main.html`](Wayang-Seni-Pujangga-main-v.2.0.0-main/main.html): Entry point (auth check, navbar, carousels).
-  - `css/`: [`style.css`](Wayang-Seni-Pujangga-main-v.2.0.0-main/css/style.css), [`search-player.css`](Wayang-Seni-Pujangga-main-v.2.0.0-main/css/search-player.css), etc.
-  - `js/`: [`script.js`](Wayang-Seni-Pujangga-main-v.2.0.0-main/js/script.js), [`carousel.js`](Wayang-Seni-Pujangga-main-v.2.0.0-main/js/carousel.js), [`profile-watchlist.js`](Wayang-Seni-Pujangga-main-v.2.0.0-main/js/profile-watchlist.js), [`search-player.js`](Wayang-Seni-Pujangga-main-v.2.0.0-main/js/search-player.js), [`navbar.js`](Wayang-Seni-Pujangga-main-v.2.0.0-main/js/navbar.js).
-  - `frontend/`: [`movie-detail.html`](Wayang-Seni-Pujangga-main-v.2.0.0-main/frontend/movie-detail.html), [`splayer-movie.html`](Wayang-Seni-Pujangga-main-v.2.0.0-main/frontend/splayer-movie.html), etc.
+- `wsp-assets/`
+  - [`main.html`](wsp-assets/main.html): Entry point (auth check, navbar, carousels).
+  - `css/`: [`style.css`](wsp-assets/css/style.css), [`search-player.css`](wsp-assets/css/search-player.css), etc.
+  - `js/`: [`script.js`](wsp-assets/js/script.js), [`carousel.js`](wsp-assets/js/carousel.js), [`profile-watchlist.js`](wsp-assets/js/profile-watchlist.js), [`search-player.js`](wsp-assets/js/search-player.js), [`navbar.js`](wsp-assets/js/navbar.js).
+  - `frontend/`: [`movie-detail.html`](wsp-assets/frontend/movie-detail.html), [`splayer-movie.html`](wsp-assets/frontend/splayer-movie.html), etc.
   - `images/`: Assets (posters, backgrounds, logo.svg).
   - `media/`: Video backgrounds.
-  - [`Readme.md`](Wayang-Seni-Pujangga-main-v.2.0.0-main/Readme.md): Original streaming docs (supplemental).
+  - [`Readme.md`](wsp-assets/Readme.md): Original streaming docs (supplemental).
 
 No external dependencies beyond CDNs (FontAwesome, Google Fonts) and Supabase/TMDB APIs.
 
 ## Architecture Diagram
+
+## Tech Stack and Tools
+
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **Styling**: Neumorphic design with vanilla CSS (box-shadows, transitions)
+- **Backend & Auth**: Supabase (Authentication, PostgreSQL database, RPC functions for PIN validation)
+- **APIs**: The Movie Database (TMDB) for movies/TV shows metadata, search, and posters
+- **Deployment**: Netlify (static hosting, redirects via netlify.toml, automatic HTTPS)
+- **IDE**: Visual Studio Code (VS Code) for development, debugging, and Live Server extension
+- **AI Tools**:
+  - Kilo Code: AI software engineer for code implementation, refactoring, documentation enhancement, and task automation
+  - Grok-4 (xAI): Advanced reasoning model for problem-solving, code analysis, and mode-based workflows (e.g., Code, Architect, Debug modes)
 
 ```mermaid
 graph TD

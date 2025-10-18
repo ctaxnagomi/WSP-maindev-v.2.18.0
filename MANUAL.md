@@ -33,7 +33,7 @@ The project files are in the root (login) and subdirectory (streaming). No build
 
 1. **Download/Clone the Project**:
    - The workspace is c:/Users/wanmo/WSP-maindev-v.2.18.0.
-   - Files: Root (index.html, style.css, script.js, setup_guest_pins.sql, netlify.toml, docs); subdirectory Wayang-Seni-Pujangga-main-v.2.0.0-main/ (streaming).
+   - Files: Root (index.html, style.css, script.js, setup_guest_pins.sql, netlify.toml, docs); subdirectory wsp-assets/ (streaming).
 
 2. **Backend Setup**:
 

@@ -470,7 +470,7 @@ class NeumorphismLoginForm {
 
   scheduleRedirect() {
     setTimeout(() => {
-      window.location.href = "Wayang-Seni-Pujangga-main-v.2.0.0-main/main.html";
+      window.location.href = "wsp-assets/main.html";
     }, 2000);
   }
 

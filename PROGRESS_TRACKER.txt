@@ -27,7 +27,7 @@ Update this file as milestones are reached. Last Updated: 2025-10-18
 - [x] Backend integration (Supabase for auth and PIN validation RPC)
 
 ## Phase 3: Streaming Site Setup & Implementation
-- [x] Review streaming site structure (Wayang-Seni-Pujangga-main-v.2.0.0-main/: main.html, CSS/JS, frontend pages)
+- [x] Review streaming site structure (wsp-assets/: main.html, CSS/JS, frontend pages)
 - [x] Integrate TMDB API for search and metadata fetching (movies/TV shows, genres)
 - [x] Implement playback via vidnest.fun iframes (splayer-movie.html, splayer-tvshow.html)
 - [x] Add localStorage for watchlists and progress tracking (per-profile, resume playback >30s)

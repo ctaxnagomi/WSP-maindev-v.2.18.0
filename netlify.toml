@@ -4,7 +4,7 @@
 # Redirects and headers for deployment
 [[redirects]]
   from = "/"
-  to = "/Wayang-Seni-Pujangga-main-v.2.0.0-main/main.html"
+  to = "/wsp-assets/main.html"
   status = 200
 
 [[headers]]
