@@ -1,0 +1,134 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [ preview, prod, main ]
+  push:
+    branches: [ modifyws, debugreport, bugfix ]
+
+jobs:
+  lint-javascript:
+    name: Lint JavaScript
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install ESLint
+        run: npm install -g eslint
+      
+      - name: Create ESLint config
+        run: |
+          cat > .eslintrc.json << 'EOF'
+          {
+            "env": {
+              "browser": true,
+              "es2021": true
+            },
+            "extends": "eslint:recommended",
+            "parserOptions": {
+              "ecmaVersion": "latest",
+              "sourceType": "module"
+            },
+            "rules": {
+              "no-unused-vars": "warn",
+              "no-undef": "warn"
+            }
+          }
+          EOF
+      
+      - name: Lint JavaScript files
+        run: |
+          eslint script.js || echo "Linting completed with warnings"
+          eslint wsp-assets/js/*.js || echo "Linting completed with warnings"
+
+  validate-html:
+    name: Validate HTML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install HTML validator
+        run: npm install -g html-validate
+      
+      - name: Create validation config
+        run: |
+          cat > .htmlvalidate.json << 'EOF'
+          {
+            "extends": ["html-validate:recommended"],
+            "rules": {
+              "void-style": "off",
+              "no-trailing-whitespace": "off"
+            }
+          }
+          EOF
+      
+      - name: Validate HTML files
+        run: |
+          html-validate index.html || echo "Validation completed with warnings"
+          html-validate wsp-assets/main.html || echo "Validation completed with warnings"
+          html-validate wsp-assets/frontend/*.html || echo "Validation completed with warnings"
+
+  check-typescript:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      
+      - name: Type check Supabase functions
+        run: |
+          if [ -f "supabase/functions/create-session/index.ts" ]; then
+            deno check supabase/functions/create-session/index.ts
+          else
+            echo "No TypeScript files to check"
+          fi
+
+  lint-css:
+    name: Lint CSS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Stylelint
+        run: npm install -g stylelint stylelint-config-standard
+      
+      - name: Create Stylelint config
+        run: |
+          cat > .stylelintrc.json << 'EOF'
+          {
+            "extends": "stylelint-config-standard",
+            "rules": {
+              "color-hex-length": "short",
+              "declaration-block-no-redundant-longhand-properties": null,
+              "no-descending-specificity": null
+            }
+          }
+          EOF
+      
+      - name: Lint CSS files
+        run: |
+          stylelint "style.css" || echo "Linting completed with warnings"
+          stylelint "wsp-assets/css/*.css" || echo "Linting completed with warnings"

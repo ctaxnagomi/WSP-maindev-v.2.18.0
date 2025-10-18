@@ -1,0 +1,57 @@
+name: Security Checks
+
+on:
+  pull_request:
+    branches: [ preview, prod, main ]
+  push:
+    branches: [ modifyws, debugreport, bugfix ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight UTC
+
+jobs:
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+
+  dependency-check:
+    name: Dependency Security Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check for package.json
+        id: check_files
+        run: |
+          if [ -f "package.json" ]; then
+            echo "has_package_json=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_package_json=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Setup Node.js
+        if: steps.check_files.outputs.has_package_json == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run npm audit
+        if: steps.check_files.outputs.has_package_json == 'true'
+        run: npm audit --audit-level=moderate
+      
+      - name: No dependencies to check
+        if: steps.check_files.outputs.has_package_json == 'false'
+        run: echo "No package.json found - skipping dependency check"
