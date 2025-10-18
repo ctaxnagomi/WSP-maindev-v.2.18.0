@@ -37,6 +37,7 @@ class NeumorphismLoginForm {
     this.setupNeumorphicEffects();
     this.initGuestMode();
     this.initSupabase();
+    this.checkInitialSession();
   }
 
   bindEvents() {
@@ -466,6 +467,20 @@ class NeumorphismLoginForm {
     this.pinSuccess.classList.add("show");
     this.keypadGrid.style.opacity = "0.5";
     this.keypadGrid.style.pointerEvents = "none";
+  }
+
+  async checkInitialSession() {
+    if (!this.supabase) return;
+
+    try {
+      const { data: { session } } = await this.supabase.auth.getSession();
+      if (session) {
+        console.log("Existing session detected, redirecting...");
+        this.scheduleRedirect();
+      }
+    } catch (error) {
+      console.error("Error checking initial session:", error);
+    }
   }
 
   scheduleRedirect() {
