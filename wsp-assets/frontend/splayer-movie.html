@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Player</title>
+    <link rel="stylesheet" href="/css/style.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <a href="main.html"><img src="images/logo.svg" alt="Ctaxfilm Logo" /></a>
+        </div>
+        <ul class="nav-list">
+          <li><a href="main.html">home</a></li>
+          <li><a href="pricing.html">pricing</a></li>
+          <li><a href="other.html">other</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+       <!-- Buttons -->
+              <div style="text-align:center; margin:20px;">
+                <button onclick="openPopup('movie')" class="button1 button2" style="background:#4CAF50;">🎬 Movies</button>
+                <button onclick="openPopup('tv')" class="button1 button2" style="background:#2196F3;">📺 TV Shows</button>
+              </div>
+              
+              <!-- Overlay -->
+              <div id="popupOverlay" onclick="closePopup()"></div>
+              
+              <!-- Popup Search -->
+              <div id="popup">
+                <h3 id="popupTitle">Search</h3>
+                <input type="text" id="searchBox" placeholder="🔎 Type a title..." onkeyup="searchTMDB()">
+                <div id="results"></div>
+                
+                <!-- Close button now styled same as others -->
+                <button class="button1 button2" style="background:#f44336;" onclick="closePopup()">❌ Close</button>
+              </div>
+              
+              <!-- Video Player -->
+              <div id="videoContainer" style="position:relative; padding-bottom:56.25%; height:0; display:none; margin-top:20px;">
+                <div id="videoLoading" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);color:#fff;display:none;align-items:center;justify-content:center;z-index:2;">
+                  <span>Loading video...</span>
+                </div>
+                <iframe id="videoFrame"
+                        style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                        frameborder="0"
+                        allowfullscreen
+                        allow="encrypted-media">
+                </iframe>
+              </div>
+              
+              <!-- JavaScript for Popup and TMDB Search -->
+               <script>
+              let apiKey = "b9571479231e6a103f8f10a0b2525d63"; // ✅ Your TMDB API key
+              let searchType = "movie";
+              let selectedTvId = null;
+
+              function openPopup(type) {
+                searchType = type;
+                document.getElementById("popupTitle").innerText = 
+                  (type === "movie") ? "Search Movies" : "Search TV Shows";
+                document.getElementById("popup").style.display = "block";
+                document.getElementById("popupOverlay").style.display = "block";
+                document.getElementById("results").innerHTML = "";
+                document.getElementById("searchBox").value = "";
+                document.getElementById("searchBox").focus();
+                if (document.getElementById("seasonEpisodeOptions")) {
+                  document.getElementById("seasonEpisodeOptions").style.display = "none";
+                }
+              }
+              
+              function closePopup() {
+                document.getElementById("popup").style.display = "none";
+                document.getElementById("popupOverlay").style.display = "none";
+                if (document.getElementById("seasonEpisodeOptions")) {
+                  document.getElementById("seasonEpisodeOptions").style.display = "none";
+                }
+              }
+              
+              async function searchTMDB() {
+                let query = document.getElementById("searchBox").value;
+                if (query.length < 2) return;
+              
+                let url = `https://api.themoviedb.org/3/search/${searchType}?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
+                let response = await fetch(url);
+                let data = await response.json();
+              
+                let resultsDiv = document.getElementById("results");
+                resultsDiv.innerHTML = "";
+              
+                data.results.forEach(item => {
+                  let title = (searchType === "movie") ? item.title : item.name;
+                  let release = (item.release_date || item.first_air_date || "").split("-")[0];
+                  let id = item.id;
+              
+                  let div = document.createElement("div");
+                  div.innerHTML = `${title} (${release || "N/A"})`;
+                  div.onclick = () => selectItem(id);
+                  resultsDiv.appendChild(div);
+                });
+              }
+              
+              function selectItem(id) {
+                if (searchType === "movie") {
+                  closePopup();
+                  const url = `https://vidnest.fun/movie/${id}`;
+                  document.getElementById("videoFrame").src = url;
+                  document.getElementById("videoContainer").style.display = "block";
+                } else {
+                  // Show season/episode options for TV
+                  selectedTvId = id;
+                  let optionsDiv = document.getElementById("seasonEpisodeOptions");
+                  if (!optionsDiv) {
+                    optionsDiv = document.createElement("div");
+                    optionsDiv.id = "seasonEpisodeOptions";
+                    optionsDiv.style.marginTop = "10px";
+                    optionsDiv.innerHTML = `
+                      <label>Season: <input type="number" id="seasonInput" min="1" value="1" style="width:60px;"></label>
+                      <label>Episode: <input type="number" id="episodeInput" min="1" value="1" style="width:60px;"></label>
+                      <button onclick="confirmSeasonEpisode()" class="button1 button2" style="background:#2196F3;">Go</button>
+                    `;
+                    document.getElementById("popup").appendChild(optionsDiv);
+                  }
+                  optionsDiv.style.display = "block";
+                }
+              }
+              
+              function confirmSeasonEpisode() {
+                const season = document.getElementById("seasonInput").value;
+                const episode = document.getElementById("episodeInput").value;
+                closePopup();
+                const url = `https://vidnest.fun/tv/${selectedTvId}/${season}/${episode}`;
+                document.getElementById("videoFrame").src = url;
+                document.getElementById("videoContainer").style.display = "block";
+              }
+              </script>
+    </main>
+
+    <footer>
+      <p>&#169; 2022 Ctaxfilm. All Rights Reserved</p>
+    </footer>
+
+
+
+  </body>
+</html>

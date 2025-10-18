@@ -1,0 +1,16 @@
+[build]
+  publish = "."
+
+# Redirects and headers for deployment
+[[redirects]]
+  from = "/"
+  to = "/Wayang-Seni-Pujangga-main-v.2.0.0-main/main.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

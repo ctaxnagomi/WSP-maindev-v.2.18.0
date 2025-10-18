@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wayang Seni Pujangga - Movie Streaming Website</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/search-player.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Fontawesome Link for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    />
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <a href=""><img src="images/logo.svg" alt="Wayang Seni Pujangga" /></a>
+        </div>
+        <ul class="nav-list">
+          <li class="home"><a href="">home</a></li>
+          <li><a href="">movie</a></li>
+          <li><a href="">tv show</a></li>
+          <li><a href="">pricing</a></li>
+          <button class="btn">coming soon</button>
+        </ul>
+        <div class="search-icon" onclick="openPopup('movie')">
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="profile-icon" onclick="document.getElementById('profileModal').style.display='flex'">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="hamburger">
+          <div class="line"></div>
+          <div class="line"></div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Profile Selection Modal -->
+    <div id="profileModal" class="profile-modal">
+      <div class="profile-modal-content">
+        <h2>Who's watching?</h2>
+        <div class="profiles">
+          <div class="profile" onclick="selectProfile('User 1')">
+            <img src="images/logo.svg" alt="Profile 1">
+            <p>User 1</p>
+          </div>
+          <div class="profile" onclick="selectProfile('User 2')">
+            <img src="images/logo.svg" alt="Profile 2">
+            <p>User 2</p>
+          </div>
+          <div class="profile" onclick="selectProfile('Kids')">
+            <img src="images/logo.svg" alt="Kids">
+            <p>Kids</p>
+          </div>
+          <div class="profile add-profile" onclick="addProfile()">
+            <i class="fas fa-plus"></i>
+            <p>Add Profile</p>
+          </div>
+        </div>
+        <button class="manage-profiles-btn">Manage Profiles</button>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="main">
+        <div class="content">
+          <p>Ctax Film</p>
+          <h1>Watch movies and TV shows for free, in high quality!</h1>
+          <div class="watch-btn">
+            <button><i class="fa-solid fa-play"></i>Watch Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- service section starts -->
+    <section class="service">
+      <div class="main">
+        <div class="img">
+          <img src="images/service-banner-2.jpg" alt="" />
+        </div>
+        <div class="content">
+          <small>Salam ku dolok</small>
+          <h4>Download belom dapat dolok, belajar bersyukur dolok</h4>
+          <p>
+            <!-- Buttons -->
+            <div style="text-align:center; margin:20px;">
+              <button onclick="openPopup('movie')" class="button1 button2" style="background:#4CAF50;">🎬 Movies</button>
+              <button onclick="openPopup('tv')" class="button1 button2" style="background:#2196F3;">📺 TV Shows</button>
+            </div>
+          </p>
+          <ul class="list">
+            <li>
+              <div class="service-card">
+                <div class="img">
+                  <div class="icon">
+                    <i class="fa-solid fa-tv"></i>
+                  </div>
+                </div>
+                <div class="service-content">
+                  <h5>Enjoy cerita lamak dolok</h5>
+                  <p>
+                    Teringin rasa mok tengok cerita zaman dolok dengan anak-anak kita, even mbak dak anak buah yang sopan santun sik kurang ajar datang rumah tangga sama-sama.
+                  </p>
+                </div>
+              </div>
+            </li>
+            <hr />
+            <li>
+              <div class="service-card">
+                <div class="img">
+                  <div class="icon">
+                    <i class="fa-solid fa-video"></i>
+                  </div>
+                </div>
+                <div class="service-content">
+                  <h5>Kualiti boh riso Abang G ada pake control dibelakang takbir</h5>
+                  <p>
+                    Kualiti movie sitok nang jangan riso even subtitle nok sikpaham bahasa english pun abang boleh bantu siap nyedia pake kitakorang download terus. kelak abang ngato untuk masa hadapan.
+                  </p>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- top movie section start  -->
+    <section class="top-movie same">
+      <div class="header">
+        <small>online streaming</small>
+        <h4>Top Rated Movies</h4>
+      </div>
+      <div class="top-movie-main">
+        <div class="buttons">
+          <button onclick="filterByGenre('all')">All</button>
+          <button onclick="filterByGenre('action')">Action</button>
+          <button onclick="filterByGenre('comedy')">Comedy</button>
+          <button onclick="filterByGenre('drama')">Drama</button>
+          <button onclick="filterByGenre('horror')">Horror</button>
+          <button onclick="filterByGenre('sci-fi')">Sci-Fi</button>
+        </div>
+        <div class="movie-card">
+          <article class="card__container">
+            <div class="card mobile" data-movie-id="sonic" data-genre="action" data-movie-title="Sonic" style="--img: url(images/movie-1.png);" tabindex="0" onclick="searchAndPlayMovie('Sonic')">
+              <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('sonic')">
+                <i class="fas fa-heart"></i>
+              </div>
+            </div>
+            <div class="card mobile" data-movie-id="morbius" data-genre="action" data-movie-title="Morbius" style="--img: url(images/movie-2.png);" tabindex="0" onclick="searchAndPlayMovie('Morbius')">
+              <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('morbius')">
+                <i class="fas fa-heart"></i>
+              </div>
+            </div>
+            <div class="card mobile" data-movie-title="Adam Project" style="--img: url(images/movie-3.png);" tabindex="0" onclick="searchAndPlayMovie('Adam Project')"></div>
+            <div class="card mobile" data-movie-title="Free Guy" style="--img: url(images/movie-4.png);" tabindex="0" onclick="searchAndPlayMovie('Free Guy')"></div>
+            <div class="card mobile" data-movie-title="Batman" style="--img: url(images/movie-5.png);" tabindex="0" onclick="searchAndPlayMovie('Batman')"></div>
+            <div class="card mobile" data-movie-title="Uncharted" style="--img: url(images/movie-6.png);" tabindex="0" onclick="searchAndPlayMovie('Uncharted')"></div>
+            <div class="card mobile" data-movie-title="Death On The Nile" style="--img: url(images/movie-7.png);" tabindex="0" onclick="searchAndPlayMovie('Death On The Nile')"></div>
+            <div class="card mobile" data-movie-title="Kingsman" style="--img: url(images/movie-8.png);" tabindex="0" onclick="searchAndPlayMovie('Kingsman')"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- tvs series section starts  -->
+    <section class="tv-series same">
+      <div class="header">
+        <small>best tv series</small>
+        <h4>World Best TV Series</h4>
+      </div>
+      <div class="movie-card">
+        <article class="card__container">
+          <div class="card mobile" data-movie-title="Moon Knight" style="--img: url(images/series-1.png);" tabindex="0" onclick="searchAndPlayMovie('Moon Knight')"></div>
+          <div class="card mobile" data-movie-title="Halo" style="--img: url(images/series-2.png);" tabindex="0" onclick="searchAndPlayMovie('Halo')"></div>
+          <div class="card mobile" data-movie-title="Vikings Valhalla" style="--img: url(images/series-3.png);" tabindex="0" onclick="searchAndPlayMovie('Vikings Valhalla')"></div>
+          <div class="card mobile" data-movie-title="Money Heist" style="--img: url(images/series-4.png);" tabindex="0" onclick="searchAndPlayMovie('Money Heist')"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Recommendations section -->
+    <section class="recommendations same">
+      <div class="header">
+        <small>recommended for you</small>
+        <h4>Because you watched Sonic</h4>
+      </div>
+      <div class="movie-card">
+        <article class="card__container">
+          <div class="card mobile" data-movie-id="sonic2" data-genre="action" data-movie-title="Sonic 2" style="--img: url(images/movie-1.png);" tabindex="0" onclick="searchAndPlayMovie('Sonic 2')">
+            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('sonic2')">
+              <i class="fas fa-heart"></i>
+            </div>
+          </div>
+          <div class="card mobile" data-movie-id="spiderman" data-genre="action" data-movie-title="Spider-Man" style="--img: url(images/movie-3.png);" tabindex="0" onclick="searchAndPlayMovie('Spider-Man')">
+            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('spiderman')">
+              <i class="fas fa-heart"></i>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Trending Now section -->
+    <section class="trending same">
+      <div class="header">
+        <small>trending now</small>
+        <h4>Popular This Week</h4>
+      </div>
+      <div class="movie-card">
+        <article class="card__container">
+          <div class="card mobile" data-movie-id="batman" data-genre="action" data-movie-title="The Batman" style="--img: url(images/movie-5.png);" tabindex="0" onclick="searchAndPlayMovie('The Batman')">
+            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('batman')">
+              <i class="fas fa-heart"></i>
+            </div>
+          </div>
+          <div class="card mobile" data-movie-id="uncharted" data-genre="action" data-movie-title="Uncharted" style="--img: url(images/movie-6.png);" tabindex="0" onclick="searchAndPlayMovie('Uncharted')">
+            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('uncharted')">
+              <i class="fas fa-heart"></i>
+            </div>
+          </div>
+          <div class="card mobile" data-movie-id="kingsman" data-genre="action" data-movie-title="Kingsman" style="--img: url(images/movie-8.png);" tabindex="0" onclick="searchAndPlayMovie('Kingsman')">
+            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('kingsman')">
+              <i class="fas fa-heart"></i>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- trial section starts  -->
+    <section class="trial">
+      <div class="main">
+        <div class="content">
+          <h4>Mok dengar khabar berita ka subscribe ajak abang ada website personal siger</h4>
+          <p>Engkah jak email kelak ada nyusul berita harian</p>
+        </div>
+        <div class="form">
+          <div class="input">
+            <input type="email" placeholder="Enter Your Email">
+            <button> get started</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overlay -->
+    <div id="popupOverlay" onclick="closePopup()"></div>
+
+    <!-- Popup Search -->
+    <div id="popup">
+      <h3 id="popupTitle">Search</h3>
+      <input type="text" id="searchBox" placeholder="🔎 Type a title..." onkeyup="searchTMDB()">
+      <div id="results"></div>
+      <button class="button1 button2" style="background:#f44336;" onclick="closePopup()">❌ Close</button>
+    </div>
+
+    <!-- Video Player -->
+    <div id="videoContainer" style="position:relative; padding-bottom:56.25%; height:0; display:none; margin-top:20px; border-radius: 8px; overflow: hidden;">
+      <div id="videoLoading" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);color:#fff;display:none;align-items:center;justify-content:center;z-index:2;">
+        <span>Loading video...</span>
+      </div>
+      <button onclick="closeVideo()" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.7); color:#fff; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; z-index:3;">
+        <i class="fas fa-times"></i>
+      </button>
+      <iframe id="videoFrame"
+              style="position:absolute; top:0; left:0; width:100%; height:100%;"
+              frameborder="0"
+              allowfullscreen
+              allow="encrypted-media">
+      </iframe>
+    </div>
+
+    <!-- Metadata Details Modal -->
+    <div id="detailsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center;">
+      <div style="background:#141414; color:#fff; padding:30px; border-radius:12px; max-width:600px; width:90%; max-height:80vh; overflow-y:auto;">
+        <button onclick="closeDetails()" style="position:absolute; top:10px; right:10px; background:transparent; color:#fff; border:none; font-size:24px; cursor:pointer;">&times;</button>
+        <div id="detailsContent">
+          <h2 id="detailsTitle"></h2>
+          <img id="detailsPoster" style="width:200px; float:left; margin-right:20px; border-radius:8px;" alt="Poster">
+          <p id="detailsOverview"></p>
+          <p><strong>Release Date:</strong> <span id="detailsRelease"></span></p>
+          <p><strong>Genre:</strong> <span id="detailsGenre"></span></p>
+          <p><strong>Runtime:</strong> <span id="detailsRuntime"></span></p>
+          <div id="resumeInfo" style="display:none; background:#333; padding:10px; border-radius:5px; margin-top:10px;">
+            <p>Resume from: <span id="resumeTime"></span></p>
+            <button onclick="resumePlayback()" style="background:#4CAF50; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">Resume</button>
+            <button onclick="restartPlayback()" style="background:#f44336; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; margin-left:10px;">Restart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="main">
+        <div class="footer-top">
+          <nav>
+            <div class="logo">
+              <img src="images/logo.svg" alt="Footer Logo" />
+            </div>
+            <ul class="list">
+              <li><a href="">home</a></li>
+              <li><a href="">movie</a></li>
+              <li><a href="">tv show</a></li>
+              <li><a href="">pricing</a></li>
+            </ul>
+          </nav>
+          <hr />
+          <div class="links">
+            <div class="text-links">
+              <a href="other.html#faq">faq</a>
+              <a href="other.html#help-center">help center</a>
+              <a href="other.html#terms-of-use">terms of use</a>
+              <a href="other.html#privacy">privacy</a>
+            </div>
+            <div class="social-links">
+              <a href=""><i class="fa-brands fa-facebook"></i></a>
+              <a href=""><i class="fa-brands fa-twitter"></i></a>
+              <a href=""><i class="fa-brands fa-linkedin"></i></a>
+              <a href=""><i class="fa-brands fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&#169; 2022 Ctaxnagomi. All Rights Reserved</p>
+        </div>
+      </div>
+    </footer>
+
+    <button class="back-to-top"><i class="fa-solid fa-chevron-up"></i></button>
+
+    <!-- Scripts -->
+    <script src="js/navbar.js"></script>
+    <script src="js/carousel.js"></script>
+    <script src="js/profile-watchlist.js"></script>
+    <script src="js/search-player.js"></script>
+  </body>
+</html>
