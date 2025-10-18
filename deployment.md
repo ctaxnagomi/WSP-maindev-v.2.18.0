@@ -1,7 +1,7 @@
 # Deployment Instructions for WSP Session Tracking System
 
 ## Prerequisites
-- Supabase project set up (URL: https://uxcxnidgebtrgggmvyph.supabase.co, Anon Key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4Y3huaWRnZWJ0cmdnZ212eXBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5MTgzNjgsImV4cCI6MjA3NTQ5NDM2OH0.SsIPnNO1Nj-38Qb6_ZRKTrjGi5f6v8hVdoI0YUxFxqw, Service Role Key: sbp_c7fa60462c51daf55e4439363789d3ff0cacdd0f).
+- Supabase project set up (URL: https://uxcxnidgebtrgggmvyph.supabase.co, Anon Key: [your anon key], Service Role Key: [your service role key]).
 - Supabase CLI for Edge Function deployment (optional for SQL via dashboard). On Windows, install via Scoop: Install Scoop from https://scoop.sh/, then `scoop bucket add supabase https://github.com/supabase/scoop-bucket` and `scoop install supabase`. (Avoid npm global install, as it's not supported.)
 - Existing guest_pins setup from setup_guest_pins.sql executed.
 
@@ -17,8 +17,8 @@
 1. Link Supabase CLI: Run `supabase login` (use access token if prompted; CLI already installed via Scoop/Chocolatey).
 2. The function code is in [`supabase/functions/create-session/index.ts`](supabase/functions/create-session/index.ts) (lines 1-78).
 3. From project root, run `supabase functions deploy create-session`.
-4. Set secrets in Dashboard > Settings > API > Secrets (or CLI: `supabase secrets set SUPABASE_URL=https://uxcxnidgebtrgggmvyph.supabase.co` and `supabase secrets set SUPABASE_SERVICE_ROLE_KEY=sbp_c7fa60462c51daf55e4439363789d3ff0cacdd0f`).
-5. Test: POST to `https://uxcxnidgebtrgggmvyph.supabase.co/functions/v1/create-session` with Authorization Bearer (anon key) and body `{ "login_type": "guest_pin", "guest_pin": "48291" }`. Expect `{ "session_id": "uuid", "success": true }`.
+4. Set secrets in Dashboard > Settings > API > Secrets (or CLI: `supabase secrets set SUPABASE_URL=https://uxcxnidgebtrgggmvyph.supabase.co` and `supabase secrets set SUPABASE_SERVICE_ROLE_KEY=[your service role key]`).
+5. Test: POST to `https://uxcxnidgebtrgggmvyph.supabase.co/functions/v1/create-session` with Authorization Bearer ([your anon key]) and body `{ "login_type": "guest_pin", "guest_pin": "48291" }`. Expect `{ "session_id": "uuid", "success": true }`.
 
 ## 3. Frontend Integration
 1. Updates to [`script.js`](script.js) are applied (session creation on auth success, close on beforeunload).
