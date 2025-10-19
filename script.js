@@ -23,6 +23,7 @@ class NeumorphismLoginForm {
     // PIN State
     this.currentPin = "";
     this.validPins = []; // Will be validated via Supabase RPC
+  this.isValidatingPin = false; // Prevent double submissions from keypad
 
     // Session State
     this.sessionId = null;
@@ -390,6 +391,9 @@ class NeumorphismLoginForm {
   }
 
   handleDigit(digit) {
+    // Ignore input while a validation request is in-flight
+    if (this.isValidatingPin) return;
+
     if (this.currentPin.length < 5) {
       this.currentPin += digit;
       this.updateDisplay();
@@ -420,11 +424,24 @@ class NeumorphismLoginForm {
   }
 
   async validatePin() {
+    // Basic safety checks
     if (!this.supabase) {
       console.error("Supabase not initialized");
       this.showPinError();
       return;
     }
+
+    // Ensure PIN is exactly 5 digits before calling the RPC
+    if (!/^\d{5}$/.test(this.currentPin)) {
+      this.showPinError();
+      this.currentPin = "";
+      this.updateDisplay();
+      return;
+    }
+
+    this.isValidatingPin = true;
+    // Disable keypad interactions while validating
+    if (this.keypadGrid) this.keypadGrid.style.pointerEvents = 'none';
 
     try {
       const { data, error } = await this.supabase.rpc('validate_pin', {
@@ -433,7 +450,16 @@ class NeumorphismLoginForm {
 
       if (error) throw error;
 
-      if (data && data.valid) {
+      // Supabase RPC returning a TABLE usually provides an array of rows
+      // e.g. [{ valid: true }] so handle both shapes safely.
+      let valid = false;
+      if (Array.isArray(data)) {
+        valid = !!(data[0] && data[0].valid);
+      } else if (data && typeof data.valid !== 'undefined') {
+        valid = !!data.valid;
+      }
+
+      if (valid) {
         // Sign in anonymously for guest session
         const { data: sessionData, error: sessionError } = await this.supabase.auth.signInAnonymously();
         if (sessionError) throw sessionError;
@@ -453,6 +479,9 @@ class NeumorphismLoginForm {
       this.showPinError();
       this.currentPin = "";
       this.updateDisplay();
+    } finally {
+      this.isValidatingPin = false;
+      if (this.keypadGrid) this.keypadGrid.style.pointerEvents = '';
     }
   }
 
@@ -548,7 +577,7 @@ class NeumorphismLoginForm {
 
   scheduleRedirect() {
     setTimeout(() => {
-      window.location.href = "wsp-assets/main.html";
+      window.location.href = `${window.location.origin}/wsp-assets/main.html`;
     }, 2000);
   }
 
