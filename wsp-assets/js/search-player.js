@@ -1,7 +1,7 @@
 // Search and Player Module
 // Handles TMDB search, video playback, metadata fetching, and resume functionality
 
-let apiKey = "YOUR_SECURE_TMDB_API_KEY_HERE"; // Replace with your TMDB API key; for production, proxy requests through a backend
+let apiKey = "b9571479231e6a103f8f10a0b2525d63"; // Replace with your TMDB API key; for production, proxy requests through a backend
 let searchType = "movie";
 let selectedTvId = null;
 let currentUser = null;
