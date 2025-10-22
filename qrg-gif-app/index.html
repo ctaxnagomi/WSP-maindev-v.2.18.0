@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRGGIF Tester</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .app-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            background: var(--surface-color);
+            border-radius: 30px;
+            box-shadow: var(--shadow-elevation-medium);
+        }
+        
+        .preview-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--background);
+            border-radius: 15px;
+            box-shadow: var(--shadow-elevation-low);
+        }
+
+        .preview-section video,
+        .preview-section canvas {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .frames-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .frame-item {
+            background: var(--surface-color);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-elevation-low);
+            text-align: center;
+        }
+
+        .frame-item img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .controls-section {
+            display: grid;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .divider-text {
+            text-align: center;
+            color: var(--text-secondary);
+            margin: 15px 0;
+            font-weight: 500;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .filter-input {
+            background: var(--surface-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow-elevation-low);
+        }
+
+        .results-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--background);
+            border-radius: 15px;
+            box-shadow: var(--shadow-elevation-low);
+        }
+
+        .results-section pre {
+            background: var(--surface-color);
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+            color: var(--text-color);
+            font-family: monospace;
+            margin: 10px 0;
+        }
+
+        .watermark {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-animation">
+        <div class="logo">QRGGIF Tester</div>
+    </div>
+
+    <div class="app-container">
+        <div class="header">
+            <div class="neu-icon">
+                <div class="icon-inner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <path d="M20.4 14.5L16 10 4 20"/>
+                    </svg>
+                </div>
+            </div>
+            <h1>QRGGIF Tester</h1>
+            <p>Process and validate QRGGIF animations</p>
+            <p class="watermark">QRGGIF (GG) — Wan Mohd Azizi, Bintulu, Sarawak, Malaysia</p>
+        </div>
+
+        <div class="controls-section">
+            <div class="neu-input file-upload">
+                <input id="gifInput" type="file" accept="image/gif">
+                <label for="gifInput">Upload animated GIF (QRGGIF)</label>
+                <div class="input-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="divider-text">— or —</div>
+
+            <div class="camera-controls">
+                <button class="neu-button" id="startCamera">
+                    <span class="btn-text">Start Camera</span>
+                    <div class="btn-loader">
+                        <div class="neu-spinner"></div>
+                    </div>
+                </button>
+                <button class="neu-button" id="stopCamera" disabled>
+                    <span class="btn-text">Stop Camera</span>
+                    <div class="btn-loader">
+                        <div class="neu-spinner"></div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="filter-input">
+                <div class="form-group">
+                    <div class="input-group neu-input">
+                        <input type="text" id="ocrFilter" placeholder=" ">
+                        <label for="ocrFilter">OCR Filter (optional)</label>
+                        <div class="input-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <small style="color: var(--text-secondary);">Leave empty to use approved unicode set</small>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <button class="neu-button" id="runDetect">
+                    <span class="btn-text">Run Detection</span>
+                    <div class="btn-loader">
+                        <div class="neu-spinner"></div>
+                    </div>
+                </button>
+                <button class="neu-button" id="sendApi" disabled>
+                    <span class="btn-text">Send to API</span>
+                    <div class="btn-loader">
+                        <div class="neu-spinner"></div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <div class="neu-card" style="margin-bottom: 20px;">
+                <video id="cameraPreview" autoplay muted playsinline style="display:none"></video>
+                <canvas id="frameCanvas" width="300" height="300" style="display:none"></canvas>
+            </div>
+            <div class="frames-grid" id="framesList">
+                <!-- Frames will be added here -->
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="neu-card">
+                <h3>Results</h3>
+                <div class="recognized-text">
+                    <h4>Recognized Text:</h4>
+                    <pre id="recognizedText"></pre>
+                </div>
+                <div class="hash-result">
+                    <h4>Animation Hash (SHA-256):</h4>
+                    <pre id="animHash"></pre>
+                </div>
+                <div class="api-response">
+                    <h4>API Response:</h4>
+                    <pre id="apiResponse"></pre>
+                </div>
+            </div>
+        </div>
+
+        <footer class="neu-card" style="margin-top: 30px; text-align: center;">
+            <small style="color: var(--text-secondary);">QRGGIF is experimental. See README for details.</small>
+        </footer>
+    </div>
+
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/gifuct-js/dist/gifuct.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRGGIF Admin</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .admin-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 40px;
+            background: var(--surface-color);
+            border-radius: 30px;
+            box-shadow: var(--shadow-elevation-medium);
+        }
+        .response-panel {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--background);
+            border-radius: 15px;
+            box-shadow: var(--shadow-elevation-low);
+        }
+        .response-panel pre {
+            margin: 0;
+            padding: 15px;
+            background: var(--surface-color);
+            border-radius: 10px;
+            overflow-x: auto;
+            color: var(--text-color);
+        }
+        .error-response {
+            color: #ff3b5c;
+            background: rgba(255, 59, 92, 0.1);
+        }
+        .success-response {
+            color: #00c896;
+            background: rgba(0, 200, 150, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-animation">
+        <div class="logo">QRGGIF Admin</div>
+    </div>
+
+    <div class="admin-container">
+        <div class="header">
+            <div class="neu-icon">
+                <div class="icon-inner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 4L4 8l8 4 8-4-8-4z"/>
+                        <path d="M4 12l8 4 8-4"/>
+                        <path d="M4 16l8 4 8-4"/>
+                    </svg>
+                </div>
+            </div>
+            <h1>QRGGIF Admin</h1>
+            <p>Create and manage QRGGIF entries in Supabase</p>
+        </div>
+
+        <form class="login-form" id="qrggifForm" onsubmit="return false;">
+            <div class="form-group">
+                <div class="input-group neu-input">
+                    <input type="url" id="supabaseUrl" required placeholder=" ">
+                    <label for="supabaseUrl">Supabase URL</label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group neu-input">
+                    <input type="password" id="supabaseKey" required placeholder=" ">
+                    <label for="supabaseKey">Supabase Key (service role)</label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group neu-input">
+                    <input type="text" id="animationHash" required placeholder=" ">
+                    <label for="animationHash">Animation Hash</label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group neu-input">
+                    <input type="text" id="nickname" required placeholder=" ">
+                    <label for="nickname">Nickname</label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group neu-input">
+                    <input type="datetime-local" id="expiresAt" required placeholder=" ">
+                    <label for="expiresAt">Expires At</label>
+                    <div class="input-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="createBtn" class="neu-button">
+                <span class="btn-text">Create QRGGIF</span>
+                <div class="btn-loader">
+                    <div class="neu-spinner"></div>
+                </div>
+            </button>
+        </form>
+
+        <div class="response-panel">
+            <h3>Response</h3>
+            <pre id="out"></pre>
+        </div>
+    </div>
+    <script>
+        const createBtn = document.getElementById('createBtn');
+        const responsePanel = document.querySelector('.response-panel');
+        const output = document.getElementById('out');
+
+        createBtn.addEventListener('click', async () => {
+            const url = document.getElementById('supabaseUrl').value.trim();
+            const key = document.getElementById('supabaseKey').value.trim();
+            const hash = document.getElementById('animationHash').value.trim();
+            const nickname = document.getElementById('nickname').value.trim();
+            const expires_at = document.getElementById('expiresAt').value.trim() || null;
+
+            if (!url || !key || !hash) {
+                showError('Please provide Supabase URL, Key and animation hash');
+                return;
+            }
+
+            // Show loading state
+            createBtn.classList.add('loading');
+            responsePanel.className = 'response-panel';
+
+            try {
+                const supabase = supabaseJs.createClient(url, key);
+                const { data, error } = await supabase
+                    .from('qr_codes')
+                    .insert([{ 
+                        animation_hash: hash, 
+                        nickname, 
+                        expires_at: new Date(expires_at).toISOString() 
+                    }]);
+
+                if (error) {
+                    showError(error);
+                } else {
+                    showSuccess(data);
+                }
+            } catch (err) {
+                showError(err);
+            } finally {
+                createBtn.classList.remove('loading');
+            }
+        });
+
+        function showError(error) {
+            responsePanel.classList.add('error-response');
+            output.textContent = typeof error === 'string' 
+                ? error 
+                : JSON.stringify(error, null, 2);
+        }
+
+        function showSuccess(data) {
+            responsePanel.classList.add('success-response');
+            output.textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>

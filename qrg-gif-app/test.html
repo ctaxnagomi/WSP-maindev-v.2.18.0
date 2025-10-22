@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRGGIF Test Suite</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 40px;
+            background: var(--surface-color);
+            border-radius: 30px;
+            box-shadow: var(--shadow-elevation-medium);
+        }
+        .qrggif-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .qrggif-card {
+            background: var(--surface-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow-elevation-low);
+            transition: all 0.3s ease;
+        }
+        .qrggif-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-elevation-medium);
+        }
+        .qrggif-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: var(--shadow-elevation-low);
+        }
+        .qrggif-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--background);
+            border-radius: 10px;
+            box-shadow: var(--shadow-elevation-low);
+        }
+        .qrggif-info strong {
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        .status-valid {
+            color: #00c896;
+            font-weight: 600;
+        }
+        .status-expired {
+            color: #ff3b5c;
+            font-weight: 600;
+        }
+        .status-pending {
+            color: #ffd600;
+            font-weight: 600;
+        }
+        .controls {
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--surface-color);
+            border-radius: 15px;
+            box-shadow: var(--shadow-elevation-low);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: var(--text-color);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        .error-message {
+            color: #ff3b5c;
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: rgba(255, 59, 92, 0.1);
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        .success-message {
+            color: #00c896;
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: rgba(0, 200, 150, 0.1);
+            margin: 10px 0;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-animation">
+        <div class="logo">QRGGIF Test Suite</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="neu-icon">
+                <div class="icon-inner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                </div>
+            </div>
+            <h1>QRGGIF Test Suite</h1>
+            <p>Validate and manage QRGGIF animations</p>
+        </div>
+        
+        <div class="controls">
+            <button class="neu-button" onclick="generateQRGGIFs()">
+                <span class="btn-text">Generate Test QRGGIFs</span>
+                <div class="btn-loader">
+                    <div class="neu-spinner"></div>
+                </div>
+            </button>
+            <button class="neu-button" onclick="validateAll()">
+                <span class="btn-text">Validate All</span>
+                <div class="btn-loader">
+                    <div class="neu-spinner"></div>
+                </div>
+            </button>
+            <button class="neu-button" onclick="refreshStatus()">
+                <span class="btn-text">Refresh Status</span>
+                <div class="btn-loader">
+                    <div class="neu-spinner"></div>
+                </div>
+            </button>
+        </div>
+
+        <div id="status" class="success-message"></div>
+        <div id="error" class="error-message"></div>
+
+        <div id="qrggif-grid" class="qrggif-grid">
+            <!-- QRGGIFs will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = ''; // TODO: Add your Supabase URL
+        const SUPABASE_KEY = ''; // TODO: Add your Supabase anon key
+        
+        // Initialize Supabase client
+        async function initSupabase() {
+            if (!window.supabase) {
+                const { createClient } = await import('https://esm.sh/@supabase/supabase-js');
+                window.supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+            return window.supabase;
+        }
+
+        // Load QRGGIFs from local database
+        async function loadQRGGIFs() {
+            try {
+                const response = await fetch('qrg-db.json');
+                const data = await response.json();
+                return data.items || [];
+            } catch (err) {
+                console.error('Failed to load QRGGIFs:', err);
+                return [];
+            }
+        }
+
+        // Generate new test QRGGIFs
+        async function generateQRGGIFs() {
+            const status = document.getElementById('status');
+            const error = document.getElementById('error');
+            
+            try {
+                status.textContent = 'Generating QRGGIFs...';
+                error.textContent = '';
+                
+                const response = await fetch('/generate-qrggif', {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) throw new Error('Generation failed');
+                
+                status.textContent = 'QRGGIFs generated successfully!';
+                await refreshDisplay();
+            } catch (err) {
+                error.textContent = 'Failed to generate QRGGIFs: ' + err.message;
+                status.textContent = '';
+            }
+        }
+
+        // Check QRGGIF status
+        async function checkStatus(hash) {
+            const supabase = await initSupabase();
+            const { data, error } = await supabase
+                .rpc('check_qrggif_status', { p_animation_hash: hash });
+                
+            if (error) throw error;
+            return data[0];
+        }
+
+        // Validate a QRGGIF
+        async function validateQRGGIF(hash) {
+            const supabase = await initSupabase();
+            const { data, error } = await supabase
+                .rpc('validate_qrggif', { 
+                    p_animation_hash: hash,
+                    p_expiration_minutes: 15
+                });
+                
+            if (error) throw error;
+            return data[0];
+        }
+
+        // Validate all QRGGIFs
+        async function validateAll() {
+            const status = document.getElementById('status');
+            const error = document.getElementById('error');
+            
+            try {
+                const qrggifs = await loadQRGGIFs();
+                status.textContent = 'Validating all QRGGIFs...';
+                error.textContent = '';
+                
+                for (const qrggif of qrggifs) {
+                    await validateQRGGIF(qrggif.animation_hash);
+                }
+                
+                status.textContent = 'All QRGGIFs validated!';
+                await refreshDisplay();
+            } catch (err) {
+                error.textContent = 'Failed to validate QRGGIFs: ' + err.message;
+                status.textContent = '';
+            }
+        }
+
+        // Create QRGGIF card element
+        function createQRGGIFCard(qrggif, status) {
+            const card = document.createElement('div');
+            card.className = 'qrggif-card';
+            
+            let statusClass = 'status-pending';
+            let statusText = 'Pending validation';
+            
+            if (status) {
+                if (status.is_valid) {
+                    statusClass = 'status-valid';
+                    statusText = `Valid - Expires in ${status.expires_in_minutes} minutes`;
+                } else {
+                    statusClass = 'status-expired';
+                    statusText = status.message;
+                }
+            }
+            
+            card.innerHTML = `
+                <img src="${qrggif.file}" alt="${qrggif.nickname}">
+                <div class="qrggif-info">
+                    <strong>${qrggif.nickname}</strong><br>
+                    <div style="color: var(--text-secondary); margin: 5px 0;">
+                        Hash: ${qrggif.animation_hash.slice(0, 8)}...
+                    </div>
+                    <div class="${statusClass}" style="margin-top: 8px;">
+                        ${statusText}
+                    </div>
+                </div>
+                <button class="neu-button" onclick="validateQRGGIF('${qrggif.animation_hash}')" style="margin-top: 15px;">
+                    <span class="btn-text">Validate</span>
+                    <div class="btn-loader">
+                        <div class="neu-spinner"></div>
+                    </div>
+                </button>
+            `;
+            
+            return card;
+        }
+
+        // Refresh the display
+        async function refreshDisplay() {
+            const grid = document.getElementById('qrggif-grid');
+            const qrggifs = await loadQRGGIFs();
+            
+            grid.innerHTML = '';
+            
+            for (const qrggif of qrggifs) {
+                try {
+                    const status = await checkStatus(qrggif.animation_hash);
+                    const card = createQRGGIFCard(qrggif, status);
+                    grid.appendChild(card);
+                } catch (err) {
+                    console.error('Failed to check status:', err);
+                    const card = createQRGGIFCard(qrggif);
+                    grid.appendChild(card);
+                }
+            }
+        }
+
+        // Auto-refresh status every minute
+        setInterval(refreshStatus, 60000);
+
+        // Refresh status
+        async function refreshStatus() {
+            try {
+                await refreshDisplay();
+                document.getElementById('status').textContent = 'Status refreshed';
+                document.getElementById('error').textContent = '';
+            } catch (err) {
+                document.getElementById('error').textContent = 'Failed to refresh status: ' + err.message;
+                document.getElementById('status').textContent = '';
+            }
+        }
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', refreshDisplay);
+    </script>
+</body>
+</html>

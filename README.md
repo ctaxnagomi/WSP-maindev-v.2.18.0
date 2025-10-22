@@ -13,18 +13,26 @@ The project is fully static (HTML/CSS/JS) with Supabase for auth/PIN validation,
 
 ## Features
 
-### Login Gateway (Neumorphic Form)
+### Login Gateway (Neumorphic Form with QRGGIF Authentication)
 
+- **QRGGIF Authentication**:
+  - Advanced GIF parsing and frame extraction system
+  - Tesseract OCR integration with custom symbol recognition
+  - Interactive debug interface for processing visualization
+  - Efficient cache management system for optimized performance
+  - Export functionality for processing data analysis
+  - Enhanced preprocessing for improved OCR accuracy
+  
 - **Neumorphic Design**: Soft UI with embossed/inset elements via multi-layered box-shadows.
 - **Tactile Interactions**: Hover elevations, soft press effects, ambient mouse-responsive lighting.
 - **Gentle Animations**: 0.3s transitions, error shake, success pulse + plasma (hue/glow keyframes).
 - **SVG Icons**: Scalable icons for inputs (user, email, lock) and social (Google, GitHub, Twitter).
 - **Monochromatic Palette**: #e0e5ec base, subtle shadows for cohesion.
 - **Responsive**: Mobile-adapted (<480px) with flex layouts.
-- **Dual Auth Modes**: Email/password login; Guest PIN via keypad (replaces signup, validates 150 PINs from SQL).
+- **Multi Auth Modes**: Email/password login, QRGGIF auth, Guest PIN via keypad (validates 150 PINs from SQL).
 - **Social OAuth**: Provider detection with Supabase integration stubs.
-- **Validation**: Real-time (email regex, password ≥6 chars, PIN 5-digits); ARIA-enhanced.
-- **Backend**: Supabase for auth sessions and PIN RPC (validate_pin function).
+- **Validation**: Real-time (email regex, password ≥6 chars, PIN 5-digits, QRGGIF); ARIA-enhanced.
+- **Backend**: Supabase for auth sessions, QRGGIF validation, and PIN RPC (validate_pin function).
 - **ctaxnagomi Modification**: Guest keypad replaces signup; PIN array managed in setup_guest_pins.sql (creates table, inserts 150 codes, RPC for validation).
 
 ### Streaming Site (Wayang Seni Pujangga)
@@ -95,6 +103,11 @@ graph TD
     C --> D[Email/Password Form]
     C --> E[Social OAuth Buttons]
     C --> F[Guest PIN Keypad]
+    C --> R[QRGGIF Auth]
+    R --> S[GIF Frame Extraction]
+    S --> T[OCR Processing]
+    T --> U[Symbol Recognition]
+    U --> G[Validation & Submit]
     D --> G[Validation & Submit]
     E --> G
     F --> G
@@ -112,6 +125,7 @@ graph TD
     style C fill:#e0e5ec
     style I fill:#bec3cf
     style O fill:#ffffff
+    style R fill:#f0f5fc
 ```
 
 ## Git Workflow Diagram
@@ -163,13 +177,25 @@ flowchart TD
 
 ## Security Considerations
 
+- **QRGGIF Authentication**: 
+  - Implement rate limiting for QRGGIF uploads and processing
+  - Add validation for GIF file size and frame count
+  - Secure OCR processing against injection attacks
+  - Implement encrypted storage for cached QRGGIF data
+  - Monitor and log unusual OCR processing patterns
+  
 - **API Keys**: TMDB key exposed in JS (placeholder: b9571479231e6a103f8f10a0b2525d63)—rotate immediately and proxy via backend (e.g., Node/Supabase Edge Functions) in production.
 - **Supabase**: Anon key allows PIN queries (RPC secure); use Row Level Security (RLS) for tables. Rotate keys; enable email confirmations.
 - **PINs**: 150 hardcoded 5-digit codes in SQL—queryable by anon; for prod, use one-time/use or user-specific PINs.
 - **Iframes**: vidnest.fun external—risk of downtime/blocks; add sandbox attributes, error fallbacks.
 - **localStorage**: Client-side watchlists/progress—not synced; vulnerable to tampering (use Supabase for persistence in prod).
 - **HTTPS**: Enforce in deployment (Netlify auto); avoid local testing for auth.
-- **Recommendations**: Server-side proxy for all APIs; CAPTCHA for login; audit Supabase policies.
+- **Recommendations**: 
+  - Server-side proxy for all APIs
+  - CAPTCHA for login attempts
+  - Audit Supabase policies
+  - Implement secure file upload for QRGGIF processing
+  - Add anomaly detection for OCR patterns
 
 ## Deployment Instructions
 

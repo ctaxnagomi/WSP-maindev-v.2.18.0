@@ -21,6 +21,14 @@
                 <h2>Welcome back</h2>
                 <p>Please sign in to continue</p>
             </div>
+
+            <!-- QRGGIF Authentication (camera + upload) -->
+            <div class="qr-auth" style="margin-top:12px;">
+                <button type="button" id="qr-auth-btn" class="neu-button">QR Auth (QRGGIF)</button>
+                <input id="qr-upload-input" type="file" accept="image/gif" style="display:block;margin-top:8px;" />
+                <video id="qr-video" width="320" height="240" autoplay muted style="display:none;margin-top:8px;border:1px solid #ccc"></video>
+                <div id="qr-hash-output" style="margin-top:8px;font-family:monospace;display:none;"></div>
+            </div>
             
             <form class="login-form" id="loginForm" novalidate>
                 <div class="form-group">
@@ -196,10 +204,66 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
     <script src="script.test.js"></script>
+    <script src="qr-auth.js"></script>
     
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+        <div class="dashboard-header">
+            <div id="roleIndicator"></div>
+            <button class="neu-button" onclick="location.reload()">Logout</button>
+        </div>
+
+        <!-- Report Generator -->
+        <div class="report-generator">
+            <h3>Generate Reports</h3>
+            <form id="reportForm" class="neu-form">
+                <div class="form-group">
+                    <label for="reportType">Report Type</label>
+                    <select id="reportType" class="form-control" required>
+                        <!-- Populated based on role -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Start Date</label>
+                    <input type="datetime-local" id="startDate" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">End Date</label>
+                    <input type="datetime-local" id="endDate" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reportFormat">Format</label>
+                    <select id="reportFormat" class="form-control">
+                        <option value="pdf">PDF</option>
+                        <option value="xlsx">Excel</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="neu-button generate-btn">
+                    Generate Report
+                </button>
+            </form>
+        </div>
+
+        <!-- Recent Reports -->
+        <div class="recent-reports">
+            <h3>Recent Reports</h3>
+            <div class="reports-list" id="recentReports">
+                <!-- Populated via JavaScript -->
+            </div>
+        </div>
+    </div>
+
     <!-- Debug Console -->
     <div id="debug-console" style="position: fixed; bottom: 60px; right: 20px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; max-height: 200px; overflow-y: auto; display: none;">
         <div id="debug-output"></div>
     </div>
+
+    <!-- Admin Access Script -->
+    <script src="admin-access.js"></script>
 </body>
 </html>

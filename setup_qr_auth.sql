@@ -65,6 +65,22 @@ COMMENT ON COLUMN qr_codes.frame_count IS 'Number of frames in the animated sequ
 COMMENT ON COLUMN qr_codes.animation_duration IS 'Total duration of animation in milliseconds';
 COMMENT ON COLUMN qr_codes.metadata IS 'Additional metadata about the QR code (e.g., allowed IP ranges, device restrictions)';
 
+-- Watermark: QRGGIF method by Wan Mohd Azizi (GG)
+COMMENT ON FUNCTION validate_qr_code IS 'QRGGIF watermark: Developer Wan Mohd Azizi, Bintulu, Sarawak, Malaysia - Method: QRGGIF (GG)';
+
+-- Approved unicode list for embedding inside QRGGIF animations (developer-specified)
+-- Letterlike Symbols (subset shown)
+-- ℀ ℁ ℂ ℃ ℄ ℅ ℆ ℇ ℈ ℉ ℊ ℋ ℌ ℍ ℎ ℏ ℐ ℑ ℒ ℓ ℔ ℕ № ℗ ℘ ℙ ℚ ℛ ℜ ℝ ℞ ℟ ℠ ℡ ™ ℣ ℤ ℥ Ω ℧ ℨ ℩ K Å ℬ ℭ ℮ ℯ ℰ ℱ Ⅎ ℳ ℴ ⟐
+-- Number Forms (subset)
+-- ⅓ ⅔ ⅕ ⅖ ⅗ ⅘ ⅙ ⅚ ⅛ ⅜ ⅝ ⅞ ⅟ Ⅰ Ⅱ Ⅲ ...
+-- Arrows (subset)
+-- ← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ↚ ↛ ↜ ↝ ↞ ↟ ↠ ↡ ↢ ↣ ↤ ↥ ↦ ...
+-- Mathematical Operators (subset)
+-- ∀ ∁ ∂ ∃ ∄ ∅ ∆ ∇ ∈ ∉ ∊ ∋ ∌ ∍ ∎ ∏ ∐ ∑ − ∓ ∔ ∕ ∖ ∗ ∘ ∙ √ ∛ ∜ ∝ ∞ ...
+-- Misc Technical / OCR / Enclosed Alphanumerics omitted for brevity - full list maintained in project docs
+
+-- Developer note: QRGGIF embeds selected unicode sequences into animated GIF frames. The client camera logic must extract the unicode sequence and compute a validation hash which is matched against qr_codes.animation_hash. The server-side validation must verify frame order, timing, and hash.
+
 /*
 Future Implementation Notes:
 

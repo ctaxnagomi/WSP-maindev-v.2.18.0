@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "animation_hash": "replace-with-real-hash",
+      "nickname": "Demo QRGGIF",
+      "active": true,
+      "created_at": "2025-10-22T00:00:00Z",
+      "expires_at": "2025-10-23T00:00:00Z"
+    }
+  ]
+}
