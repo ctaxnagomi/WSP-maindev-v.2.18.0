@@ -53,9 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const testButton = document.createElement('button');
     testButton.textContent = 'Run PIN Tests';
     testButton.className = 'neu-button';
-    testButton.style.position = 'fixed';
+    testButton.style.position = 'default';
     testButton.style.bottom = '20px';
     testButton.style.right = '20px';
+    testButton.style.display = 'content';
+    testButton.style.zIndex = '1000';
+    testButton.style.position = 'fixed';
+    testButton.style.visibility = 'hidden';
     testButton.onclick = testPinValidation;
     document.body.appendChild(testButton);
 });
