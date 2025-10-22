@@ -114,6 +114,9 @@
             <div class="signup-link">
                 <p>Don't have an account?</p> <a href="#" id="guestTrigger">Guest</a>
             </div>
+            <div class="logout-link">
+                <a href="#" id="logoutTrigger" class="neu-button" style="display: none;">Logout</a>
+            </div>
 
             <div class="success-message" id="successMessage">
                 <div class="success-icon neu-icon">
@@ -131,6 +134,9 @@
             <div class="keypad-header">
                 <h2>Enter Guest PIN</h2>
                 <p>Enter a 5-digit access code</p>
+                <div class="nickname-input">
+                    <input type="text" id="nicknameInput" placeholder="Enter your nickname" required>
+                </div>
             </div>
             <div class="pin-display" id="pinDisplay">
                 <div class="pin-slot"></div>
@@ -189,5 +195,11 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
+    <script src="script.test.js"></script>
+    
+    <!-- Debug Console -->
+    <div id="debug-console" style="position: fixed; bottom: 60px; right: 20px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; max-height: 200px; overflow-y: auto; display: none;">
+        <div id="debug-output"></div>
+    </div>
 </body>
 </html>

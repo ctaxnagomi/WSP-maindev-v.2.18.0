@@ -384,7 +384,22 @@
                 document.getElementById("videoFrame").src = url;
                 document.getElementById("videoContainer").style.display = "block";
               }
-              </script>
+              </script>              // Split into modules:
+              /src
+                /auth
+                  - EmailAuth.js
+                  - PinAuth.js
+                  - OAuthHandlers.js
+                /components
+                  - LoginForm.js
+                  - Keypad.js
+                  - PinDisplay.js
+                /services
+                  - supabase.js
+                  - session.js
+                /utils
+                  - validation.js
+                  - animations.js
 
     <!-- Footer -->
     <footer>

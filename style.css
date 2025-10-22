@@ -632,6 +632,31 @@ body {
     font-weight: 400;
 }
 
+.nickname-input {
+    margin: 20px 0;
+}
+
+.nickname-input input {
+    width: 100%;
+    background: #e0e5ec;
+    border: none;
+    border-radius: 15px;
+    padding: 15px 20px;
+    color: #3d4468;
+    font-size: 16px;
+    outline: none;
+    box-shadow:
+        inset 8px 8px 16px #bec3cf,
+        inset -8px -8px 16px #ffffff;
+    transition: all 0.3s ease;
+}
+
+.nickname-input input:focus {
+    box-shadow:
+        inset 4px 4px 8px #bec3cf,
+        inset -4px -4px 8px #ffffff;
+}
+
 .pin-display {
     display: flex;
     justify-content: center;

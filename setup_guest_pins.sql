@@ -1,3 +1,83 @@
+-- setup_guest_pins.sql
+-- Creates guest_pins table, inserts test pins, and provides an RPC to validate pins.
+-- Paste this entire file into the Supabase SQL editor and run.
+
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Create the guest_pins table
+CREATE TABLE IF NOT EXISTS guest_pins (
+  id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  pin text UNIQUE NOT NULL,
+  nickname text,
+  active boolean DEFAULT true,
+  created_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,
+  expires_at timestamptz,
+  last_used_at timestamptz
+);
+
+-- Ensure pin length is 5 characters
+ALTER TABLE guest_pins
+  ADD CONSTRAINT guest_pins_pin_length CHECK (char_length(pin) = 5) ;
+
+-- Index for fast lookups
+CREATE INDEX IF NOT EXISTS idx_guest_pins_pin_active ON guest_pins(pin) WHERE active = true;
+
+-- Test data: clear then insert a few pins that expire in 24 hours
+TRUNCATE TABLE guest_pins RESTART IDENTITY;
+
+INSERT INTO guest_pins (pin, active, expires_at) VALUES
+('12345', true, timezone('utc'::text, now() + interval '24 hours')),
+('54321', true, timezone('utc'::text, now() + interval '24 hours')),
+('11111', true, timezone('utc'::text, now() + interval '24 hours'))
+ON CONFLICT (pin) DO NOTHING;
+
+-- RPC to validate a PIN and optionally set/update a nickname. Returns valid flag and message.
+CREATE OR REPLACE FUNCTION validate_pin(
+  pin_input text,
+  nickname_input text DEFAULT NULL
+)
+RETURNS TABLE(valid boolean, message text)
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  -- Basic validation: exact 5-digit length
+  IF pin_input IS NULL OR char_length(pin_input) <> 5 THEN
+    RETURN QUERY SELECT false, 'Invalid PIN format';
+    RETURN;
+  END IF;
+
+  -- Check existence, active flag and expiry
+  IF EXISTS (
+    SELECT 1 FROM guest_pins gp
+    WHERE gp.pin = pin_input AND gp.active = true
+      AND (gp.expires_at IS NULL OR gp.expires_at > timezone('utc'::text, now()))
+  ) THEN
+
+    -- Update last_used_at and optionally store nickname (do not overwrite existing nickname if blank)
+    UPDATE guest_pins
+    SET last_used_at = timezone('utc'::text, now()),
+        nickname = CASE WHEN nickname_input IS NOT NULL AND char_length(trim(nickname_input)) > 0 THEN nickname_input ELSE nickname END
+    WHERE pin = pin_input;
+
+    RETURN QUERY SELECT true, 'PIN validated successfully';
+    RETURN;
+  ELSE
+    RETURN QUERY SELECT false, 'Invalid or expired PIN';
+    RETURN;
+  END IF;
+END;
+$$;
+
+-- Grant permissions so anon users can call the RPC and read the guest_pins table
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT ON guest_pins TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION validate_pin(text, text) TO anon, authenticated;
+
+-- Helpful select to verify inserted pins (optional)
+-- SELECT pin, active, expires_at, nickname FROM guest_pins;
+
 -- Create the guest_pins table in Supabase
 -- Run this in your Supabase SQL editor (Dashboard > SQL Editor > New Query)
 
@@ -8,51 +88,52 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS guest_pins (
   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   pin text UNIQUE NOT NULL,
+  nickname text,
   active boolean DEFAULT true,
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
+  expires_at timestamp with time zone DEFAULT timezone('utc'::text, now() + interval '24 hours'),
+  last_used_at timestamp with time zone
 );
 
--- Insert the valid PINs (all active)
-INSERT INTO guest_pins (pin) VALUES
-('48291'), ('30517'), ('97203'), ('18450'), ('62038'), ('75912'), ('04186'), ('59320'), ('81746'), ('23059'),
-('49618'), ('30592'), ('17403'), ('82049'), ('56321'), ('90734'), ('12895'), ('47036'), ('65128'), ('39407'),
-('08253'), ('71904'), ('36520'), ('48197'), ('20536'), ('93017'), ('67428'), ('15093'), ('28764'), ('83901'),
-('41756'), ('20834'), ('69512'), ('73140'), ('59408'), ('32679'), ('84015'), ('26730'), ('59182'), ('40397'),
-('15827'), ('97036'), ('46219'), ('83104'), ('59720'), ('34861'), ('70429'), ('21603'), ('58947'), ('43068'),
-('19205'), ('36748'), ('82019'), ('47503'), ('93612'), ('15087'), ('20493'), ('67128'), ('58309'), ('74921'),
-('43057'), ('18296'), ('95023'), ('61704'), ('28391'), ('50468'), ('71935'), ('26841'), ('39507'), ('80412'),
-('52039'), ('68317'), ('09426'), ('73150'), ('58209'), ('46931'), ('21708'), ('39562'), ('84057'), ('10394'),
-('67201'), ('45836'), ('29307'), ('51748'), ('90612'), ('37489'), ('82015'), ('49136'), ('25370'), ('61804'),
-('39512'), ('20768'), ('84159'), ('30274'), ('57901'), ('64028'), ('19357'), ('80724'), ('56230'), ('48196'),
-('37052'), ('61948'), ('20573'), ('98416'), ('37109'), ('82046'), ('15738'), ('69420'), ('50391'), ('72840'),
-('29157'), ('46803'), ('10529'), ('73648'), ('59012'), ('24736'), ('81305'), ('42961'), ('50738'), ('19624'),
-('85047'), ('26319'), ('47180'), ('39526'), ('72841'), ('60493'), ('18250'), ('57964'), ('31028'), ('94705'),
-('62391'), ('15840'), ('79423'), ('50618'), ('37109'), ('82064'), ('14537'), ('96802'), ('43091'), ('75268'),
-('39105'), ('64728'), ('20539'), ('81374'), ('50621'), ('94703'), ('18264'), ('35907'), ('62841'), ('50329'),
-('47186'), ('20935'), ('61748'), ('39405'), ('80217'), ('56320'), ('14892'), ('97036'), ('21508'), ('63497'),
-('58012'), ('42973'), ('17604'), ('80539'), ('61728'), ('34059'), ('29176'), ('58304'), ('97215'), ('40638'),
-('15209'), ('67438'), ('59012'), ('32849'), ('70516'), ('49328'), ('21705'), ('83902'), ('46175'), ('20839'),
-('59712'), ('34086'), ('71205'), ('43069'), ('28517'), ('94603'), ('57128'), ('30946'), ('18250'), ('69431'),
-('50827'), ('73610'), ('49185'), ('23097'), ('61740'), ('38529'), ('07416'), ('82953'), ('46018'), ('27509'),
-('39164'), ('82057'), ('13628'), ('49502'), ('76103'), ('28419'), ('50736'), ('92048'), ('61375'), ('24809'),
-('57102'), ('39486'), ('80521'), ('63749'), ('12058'), ('94731'), ('28506'), ('46172'), ('59308'), ('70416'),
-('23895'), ('61704'), ('39528'), ('80216'), ('47309'), ('15928'), ('64037'), ('21580'), ('98341'), ('57206'),
-('39418'), ('62057'), ('10839'), ('75426'), ('39105'), ('68720'), ('50391'), ('24786'), ('91035'), ('68241'),
-('37509'), ('20418'), ('63957'), ('81024'), ('57203'), ('49618'), ('30759'), ('18246'), ('95037'), ('26418')
+-- Insert test PINs with expiration (24 hours from now)
+INSERT INTO guest_pins (pin, active, expires_at) VALUES
+('12345', true, timezone('utc'::text, now() + interval '24 hours')),
+('54321', true, timezone('utc'::text, now() + interval '24 hours')),
+('11111', true, timezone('utc'::text, now() + interval '24 hours'))
 ON CONFLICT (pin) DO NOTHING;  -- Avoid duplicates if re-run
 
 -- Create RPC function for PIN validation (run this after table creation)
-CREATE OR REPLACE FUNCTION validate_pin(pin_input text)
-RETURNS TABLE (valid boolean)
+CREATE OR REPLACE FUNCTION validate_pin(
+  pin_input text,
+  nickname_input text DEFAULT NULL
+)
+RETURNS TABLE (
+  valid boolean,
+  message text
+)
 LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 BEGIN
-  RETURN QUERY
-  SELECT EXISTS (
+  -- First check if PIN exists and is valid
+  IF NOT EXISTS (
     SELECT 1 FROM guest_pins 
-    WHERE pin = pin_input AND active = true
-  ) AS valid;
+    WHERE pin = pin_input 
+    AND active = true 
+    AND expires_at > timezone('utc'::text, now())
+  ) THEN
+    RETURN QUERY SELECT false, 'Invalid or expired PIN'::text;
+    RETURN;
+  END IF;
+
+  -- Update the PIN usage
+  UPDATE guest_pins 
+  SET 
+    nickname = COALESCE(nickname_input, nickname),
+    last_used_at = timezone('utc'::text, now())
+  WHERE pin = pin_input;
+
+  RETURN QUERY SELECT true, 'PIN validated successfully'::text;
 END;
 $$;
 

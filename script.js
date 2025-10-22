@@ -19,6 +19,7 @@ class NeumorphismLoginForm {
     this.pinSuccess = document.getElementById("pinSuccess");
     this.closeGuestModal = document.getElementById("closeGuestModal");
     this.guestTrigger = document.getElementById("guestTrigger");
+    this.nicknameInput = document.getElementById("nicknameInput");
 
     // PIN State
     this.currentPin = "";
@@ -353,8 +354,16 @@ class NeumorphismLoginForm {
       return;
     }
 
-    const { createClient } = supabase;
-    this.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Reuse a single Supabase client across the window to avoid creating
+    // multiple GoTrueClient instances (which triggers a warning and can
+    // lead to subtle bugs when multiple clients share the same storage key).
+    if (window._supabaseClient) {
+      this.supabase = window._supabaseClient;
+    } else {
+      const { createClient } = supabase;
+      this.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      window._supabaseClient = this.supabase;
+    }
 
     this.supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
@@ -424,19 +433,25 @@ class NeumorphismLoginForm {
   }
 
   async validatePin() {
+    // Debug / result
+    let result = { valid: false, message: 'Not validated' };
+
     // Basic safety checks
+    console.debug('validatePin: start', { currentPin: this.currentPin });
     if (!this.supabase) {
-      console.error("Supabase not initialized");
-      this.showPinError();
-      return;
+      console.error('Supabase not initialized');
+      this.showPinError('System error');
+      result.message = 'Supabase not initialized';
+      return result;
     }
 
     // Ensure PIN is exactly 5 digits before calling the RPC
     if (!/^\d{5}$/.test(this.currentPin)) {
-      this.showPinError();
-      this.currentPin = "";
+      this.showPinError('PIN must be 5 digits');
+      this.currentPin = '';
       this.updateDisplay();
-      return;
+      result.message = 'Invalid PIN format';
+      return result;
     }
 
     this.isValidatingPin = true;
@@ -444,45 +459,57 @@ class NeumorphismLoginForm {
     if (this.keypadGrid) this.keypadGrid.style.pointerEvents = 'none';
 
     try {
+      console.debug('validatePin: calling RPC', { pin: this.currentPin });
       const { data, error } = await this.supabase.rpc('validate_pin', {
         pin_input: this.currentPin
       });
 
+      console.debug('validatePin: rpc result', { data, error });
       if (error) throw error;
 
       // Supabase RPC returning a TABLE usually provides an array of rows
-      // e.g. [{ valid: true }] so handle both shapes safely.
+      // e.g. [{ valid: true, message: '...' }] so handle both shapes safely.
       let valid = false;
-      if (Array.isArray(data)) {
-        valid = !!(data[0] && data[0].valid);
+      let message = '';
+      if (Array.isArray(data) && data.length > 0) {
+        valid = !!data[0].valid;
+        message = data[0].message || '';
       } else if (data && typeof data.valid !== 'undefined') {
         valid = !!data.valid;
+        message = data.message || '';
       }
+
+      result.valid = valid;
+      result.message = message || (valid ? 'Validated' : 'Invalid PIN');
 
       if (valid) {
         // Sign in anonymously for guest session
         const { data: sessionData, error: sessionError } = await this.supabase.auth.signInAnonymously();
         if (sessionError) throw sessionError;
 
-        console.log("Guest session created:", sessionData);
+        console.log('Guest session created:', sessionData);
         this.currentLoginType = 'guest_pin';
         this.showPinSuccess();
         this.createSession();
         this.scheduleRedirect();
       } else {
-        this.showPinError();
-        this.currentPin = "";
+        this.showPinError(result.message);
+        this.currentPin = '';
         this.updateDisplay();
       }
     } catch (error) {
-      console.error("PIN validation error:", error);
-      this.showPinError();
-      this.currentPin = "";
+      console.error('PIN validation error:', error);
+      this.showPinError(error.message || 'Validation error');
+      this.currentPin = '';
       this.updateDisplay();
+      result.message = error.message || String(error);
     } finally {
       this.isValidatingPin = false;
       if (this.keypadGrid) this.keypadGrid.style.pointerEvents = '';
     }
+
+    console.debug('validatePin: end', result);
+    return result;
   }
 
   showPinError() {
@@ -564,14 +591,35 @@ class NeumorphismLoginForm {
     }
   }
 
-  handleSessionClose() {
-    if (this.sessionId && this.supabase) {
-      this.supabase.rpc('close_session', { p_session_id: this.sessionId })
-        .then(() => {
+  async handleSessionClose() {
+    if (this.supabase) {
+      try {
+        // Sign out from Supabase
+        await this.supabase.auth.signOut();
+        
+        // Clear all local storage items
+        localStorage.removeItem('sessionId');
+        localStorage.removeItem('guestNickname');
+        localStorage.removeItem('sb-uxcxnidgebtrgggmvyph-auth-token');
+        
+        // Clear session from database if we have a session ID
+        if (this.sessionId) {
+          await this.supabase.rpc('close_session', { p_session_id: this.sessionId });
           console.log('Session closed:', this.sessionId);
-          localStorage.removeItem('sessionId');
-        })
-        .catch((error) => console.error('Failed to close session:', error));
+        }
+        
+        // Reset state
+        this.sessionId = null;
+        this.currentLoginType = null;
+        this.currentPin = "";
+        
+        console.log('Logged out successfully');
+        
+        // Reload page to reset all state
+        window.location.reload();
+      } catch (error) {
+        console.error('Failed to close session:', error);
+      }
     }
   }
 
