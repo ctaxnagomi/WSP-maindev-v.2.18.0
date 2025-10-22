@@ -18,6 +18,35 @@
       <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     </head>
         <body>
+          
+            <!-- Profile Selection Modal -->
+            <div id="profileModal" class="profile-modal">
+              <div class="profile-modal-content">
+                <h2>Who's watching?</h2>
+                <div class="profiles">
+                  <div class="profile" onclick="selectProfile('User 1')">
+                    <nav></nav>
+                    <img src="images/logo.svg" alt="Profile 1">
+                    <p>User 1</p>
+                  </div>
+                  <div class="profile" onclick="selectProfile('User 2')">
+                    <nav></nav>
+                    <img src="images/logo.svg" alt="Profile 2">
+                    <p>User 2</p>
+                  </div>
+                  <div class="profile" onclick="selectProfile('Kids')">
+                    <nav></nav>
+                    <img src="images/logo.svg" alt="Kids">
+                    <p>Kids</p>
+                  </div>
+                  <div class="profile add-profile" onclick="addProfile()">
+                    <i class="fas fa-plus"></i>
+                    <p>Add Profile</p>
+                  </div>
+                </div>
+                <button class="manage-profiles-btn">Manage Profiles</button>
+              </div>
+            </div>
               <!-- Navbar -->
               <header>
         <nav class="navbar">
@@ -47,31 +76,6 @@
         </nav>
       </header>
 
-      <!-- Profile Selection Modal -->
-      <div id="profileModal" class="profile-modal">
-        <div class="profile-modal-content">
-          <h2>Who's watching?</h2>
-          <div class="profiles">
-            <div class="profile" onclick="selectProfile('User 1')">
-              <img src="images/logo.svg" alt="Profile 1">
-              <p>User 1</p>
-            </div>
-            <div class="profile" onclick="selectProfile('User 2')">
-              <img src="images/logo.svg" alt="Profile 2">
-              <p>User 2</p>
-            </div>
-            <div class="profile" onclick="selectProfile('Kids')">
-              <img src="images/logo.svg" alt="Kids">
-              <p>Kids</p>
-            </div>
-            <div class="profile add-profile" onclick="addProfile()">
-              <i class="fas fa-plus"></i>
-              <p>Add Profile</p>
-            </div>
-          </div>
-          <button class="manage-profiles-btn">Manage Profiles</button>
-        </div>
-      </div>
 
       <!-- Hero Section -->
       <section class="hero">
