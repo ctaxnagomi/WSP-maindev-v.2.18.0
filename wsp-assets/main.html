@@ -1,453 +1,427 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wayang Seni Pujangga - Movie Streaming Website</title>
-    <link rel="stylesheet" href="/wsp-assets/css/style.css" />
-    <link rel="stylesheet" href="/wsp-assets/css/search-player.css" />
-
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>WSP v2.18</title>
+      <link rel="stylesheet" href="/wsp-assets/css/style.css" />
+      <link rel="stylesheet" href="/wsp-assets/css/search-player.css" />
     <!-- Favicon -->
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
-
+      <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
     <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <!-- Fontawesome Link for Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
-    />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
     <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  </head>
-  <body>
-    <!-- Navbar -->
-    <header>
-      <nav class="navbar">
-        <div class="logo">
-          <a href=""><img src="images/logo.svg" alt="Wayang Seni Pujangga" /></a>
-        </div>
-        <ul class="nav-list">
-          <li class="home"><a href="/wsp-assets/welcome.html">home</a></li>
-          <li><a href="/wsp-assets/frontend/splayer-movie.html">movie</a></li>
-          <li><a href="/wsp-assets/frontend/splayer-tvshow.html">tv show</a></li>
-          <li><a href="/qrg-gif-app/admin.html">t2</a></li>
-          <li><a href="/qrg-gif-app/debug.html">t3</a></li>
-          <li><a href="/qrg-gif-app/index.html">t4</a></li>
-          <li><a href="/qrg-gif-app/test.html">t5</a></li>
-          <button class="btn">coming soon</button>
-        </ul>
-        <div class="search-icon" onclick="openPopup('movie')">
-          <i class="fas fa-search"></i>
-        </div>
-        <div class="profile-icon" onclick="document.getElementById('profileModal').style.display='flex'">
-          <i class="fas fa-user"></i>
-        </div>
-        <div class="hamburger">
-          <div class="line"></div>
-          <div class="line"></div>
-        </div>
-      </nav>
-    </header>
-
-    <!-- Profile Selection Modal -->
-    <div id="profileModal" class="profile-modal">
-      <div class="profile-modal-content">
-        <h2>Who's watching?</h2>
-        <div class="profiles">
-          <div class="profile" onclick="selectProfile('User 1')">
-            <img src="images/logo.svg" alt="Profile 1">
-            <p>User 1</p>
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    </head>
+        <body>
+              <!-- Navbar -->
+              <header>
+        <nav class="navbar">
+          <div class="logo">
+            <a href=""><img src="images/logo.svg" alt="Wayang Seni Pujangga" /></a>
           </div>
-          <div class="profile" onclick="selectProfile('User 2')">
-            <img src="images/logo.svg" alt="Profile 2">
-            <p>User 2</p>
-          </div>
-          <div class="profile" onclick="selectProfile('Kids')">
-            <img src="images/logo.svg" alt="Kids">
-            <p>Kids</p>
-          </div>
-          <div class="profile add-profile" onclick="addProfile()">
-            <i class="fas fa-plus"></i>
-            <p>Add Profile</p>
-          </div>
-        </div>
-        <button class="manage-profiles-btn">Manage Profiles</button>
-      </div>
-    </div>
-
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="main">
-        <div class="content">
-          <p>Ctax Film</p>
-          <h1>Watch movies and TV shows for free, in high quality!</h1>
-          <div class="watch-btn">
-            <button href="#"><i class="fa-solid fa-play"></i>Watch Now</button>
-            <div class="image-scroller-container"><div class="scroller ">
-              <ul>
-                <li><img alt="Scroll image 1" src="https://image.tmdb.org/t/p/w154/yzqHt4m1SeY9FbPrfZ0C2Hi9x1s.jpg"></li>
-                <li><img alt="Scroll image 2" src="https://image.tmdb.org/t/p/w154/dbe1zKVKNBIczdmRcm7jxEphYLz.jpg"></li><li><img alt="Scroll image 3" src="https://image.tmdb.org/t/p/w154/7SHFZKfd270y47sXN2WsURUO3ml.jpg"></li><li><img alt="Scroll image 4" src="https://image.tmdb.org/t/p/w154/yvirUYrva23IudARHn3mMGVxWqM.jpg"></li><li><img alt="Scroll image 5" src="https://image.tmdb.org/t/p/w154/fWVSwgjpT2D78VUh6X8UBd2rorW.jpg"></li><li><img alt="Scroll image 6" src="https://image.tmdb.org/t/p/w154/7JzOmJ1fIU43I3gLHYsY8UzNzjG.jpg"></li><li><img alt="Scroll image 7" src="https://image.tmdb.org/t/p/w154/bYe2ZjUhb4Kje0BpWE6kN34u2hv.jpg"></li><li><img alt="Scroll image 8" src="https://image.tmdb.org/t/p/w154/fZlNXEHZsBp7unqw009MeBbMv87.jpg"></li><li><img alt="Scroll image 9" src="https://image.tmdb.org/t/p/w154/2Yc8Kl2ldPpDzLrG2M5Ddv62FXB.jpg"></li><li><img alt="Scroll image 10" src="https://image.tmdb.org/t/p/w154/w46Vw536HwNnEzOa7J24YH9DPRS.jpg"></li><li><img alt="Scroll image 11" src="https://image.tmdb.org/t/p/w154/yzqHt4m1SeY9FbPrfZ0C2Hi9x1s.jpg"></li><li><img alt="Scroll image 12" src="https://image.tmdb.org/t/p/w154/dbe1zKVKNBIczdmRcm7jxEphYLz.jpg"></li><li><img alt="Scroll image 13" src="https://image.tmdb.org/t/p/w154/7SHFZKfd270y47sXN2WsURUO3ml.jpg"></li><li><img alt="Scroll image 14" src="https://image.tmdb.org/t/p/w154/yvirUYrva23IudARHn3mMGVxWqM.jpg"></li><li><img alt="Scroll image 15" src="https://image.tmdb.org/t/p/w154/fWVSwgjpT2D78VUh6X8UBd2rorW.jpg"></li><li><img alt="Scroll image 16" src="https://image.tmdb.org/t/p/w154/7JzOmJ1fIU43I3gLHYsY8UzNzjG.jpg"></li><li><img alt="Scroll image 17" src="https://image.tmdb.org/t/p/w154/bYe2ZjUhb4Kje0BpWE6kN34u2hv.jpg"></li><li><img alt="Scroll image 18" src="https://image.tmdb.org/t/p/w154/fZlNXEHZsBp7unqw009MeBbMv87.jpg"></li><li><img alt="Scroll image 19" src="https://image.tmdb.org/t/p/w154/2Yc8Kl2ldPpDzLrG2M5Ddv62FXB.jpg"></li><li><img alt="Scroll image 20" src="https://image.tmdb.org/t/p/w154/w46Vw536HwNnEzOa7J24YH9DPRS.jpg"></li></ul></div><div class="scroller scroller-reverse"><ul><li><img alt="Scroll image 1" src="https://image.tmdb.org/t/p/w154/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg"></li><li><img alt="Scroll image 2" src="https://image.tmdb.org/t/p/w154/3bhkrj58Vtu7enYsRolD1fZdja1.jpg"></li><li><img alt="Scroll image 3" src="https://image.tmdb.org/t/p/w154/hek3koDUyRQk7FIhPXsa6mT2Zc3.jpg"></li><li><img alt="Scroll image 4" src="https://image.tmdb.org/t/p/w154/sF1U4EUQS8YHUYjNl3pMGNIQyr0.jpg"></li><li><img alt="Scroll image 5" src="https://image.tmdb.org/t/p/w154/ow3wq89wM8qd5X7hWKxiRfsFf9C.jpg"></li><li><img alt="Scroll image 6" src="https://image.tmdb.org/t/p/w154/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg"></li><li><img alt="Scroll image 7" src="https://image.tmdb.org/t/p/w154/qJ2tW6WMUDux911r6m7haRef0WH.jpg"></li><li><img alt="Scroll image 8" src="https://image.tmdb.org/t/p/w154/2CAL2433ZeIihfX1Hb2139CX0pW.jpg"></li><li><img alt="Scroll image 9" src="https://image.tmdb.org/t/p/w154/o0lO84GI7qrG6XFvtsPOSV7CTNa.jpg"></li><li><img alt="Scroll image 10" src="https://image.tmdb.org/t/p/w154/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg"></li><li><img alt="Scroll image 11" src="https://image.tmdb.org/t/p/w154/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg"></li><li><img alt="Scroll image 12" src="https://image.tmdb.org/t/p/w154/3bhkrj58Vtu7enYsRolD1fZdja1.jpg"></li><li><img alt="Scroll image 13" src="https://image.tmdb.org/t/p/w154/hek3koDUyRQk7FIhPXsa6mT2Zc3.jpg"></li><li><img alt="Scroll image 14" src="https://image.tmdb.org/t/p/w154/sF1U4EUQS8YHUYjNl3pMGNIQyr0.jpg"></li><li><img alt="Scroll image 15" src="https://image.tmdb.org/t/p/w154/ow3wq89wM8qd5X7hWKxiRfsFf9C.jpg"></li><li><img alt="Scroll image 16" src="https://image.tmdb.org/t/p/w154/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg"></li><li><img alt="Scroll image 17" src="https://image.tmdb.org/t/p/w154/qJ2tW6WMUDux911r6m7haRef0WH.jpg"></li><li><img alt="Scroll image 18" src="https://image.tmdb.org/t/p/w154/2CAL2433ZeIihfX1Hb2139CX0pW.jpg"></li><li><img alt="Scroll image 19" src="https://image.tmdb.org/t/p/w154/o0lO84GI7qrG6XFvtsPOSV7CTNa.jpg"></li><li><img alt="Scroll image 20" src="https://image.tmdb.org/t/p/w154/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg"></li></ul></div><div class="scroller "><ul><li><img alt="Scroll image 1" src="https://image.tmdb.org/t/p/w154/wobVTa99eW0ht6c1rNNzLkazPtR.jpg"></li><li><img alt="Scroll image 2" src="https://image.tmdb.org/t/p/w154/yzqHt4m1SeY9FbPrfZ0C2Hi9x1s.jpg"></li><li><img alt="Scroll image 3" src="https://image.tmdb.org/t/p/w154/98n5HnCJ5LnXKIMNP9SBfVNyxCE.jpg"></li><li><img alt="Scroll image 4" src="https://image.tmdb.org/t/p/w154/evbguUd1BwExQgXMjG9n9AHMQpN.jpg"></li><li><img alt="Scroll image 5" src="https://image.tmdb.org/t/p/w154/chpWmskl3aKm1aTZqUHRCtviwPy.jpg"></li><li><img alt="Scroll image 6" src="https://image.tmdb.org/t/p/w154/izYZGeOHhPWiga8Hb5P4JYfcH8T.jpg"></li><li><img alt="Scroll image 7" src="https://image.tmdb.org/t/p/w154/7JzOmJ1fIU43I3gLHYsY8UzNzjG.jpg"></li><li><img alt="Scroll image 8" src="https://image.tmdb.org/t/p/w154/xeEw3eLeSFmJgXZzmF2Efww0q3s.jpg"></li><li><img alt="Scroll image 9" src="https://image.tmdb.org/t/p/w154/cm8TNGBGG0aBfWj0LgrESHv8tir.jpg"></li><li><img alt="Scroll image 10" src="https://image.tmdb.org/t/p/w154/z53D72EAOxGRqdr7KXXWp9dJiDe.jpg"></li><li><img alt="Scroll image 11" src="https://image.tmdb.org/t/p/w154/wobVTa99eW0ht6c1rNNzLkazPtR.jpg"></li><li><img alt="Scroll image 12" src="https://image.tmdb.org/t/p/w154/yzqHt4m1SeY9FbPrfZ0C2Hi9x1s.jpg"></li><li><img alt="Scroll image 13" src="https://image.tmdb.org/t/p/w154/98n5HnCJ5LnXKIMNP9SBfVNyxCE.jpg"></li><li><img alt="Scroll image 14" src="https://image.tmdb.org/t/p/w154/evbguUd1BwExQgXMjG9n9AHMQpN.jpg"></li><li><img alt="Scroll image 15" src="https://image.tmdb.org/t/p/w154/chpWmskl3aKm1aTZqUHRCtviwPy.jpg"></li><li><img alt="Scroll image 16" src="https://image.tmdb.org/t/p/w154/izYZGeOHhPWiga8Hb5P4JYfcH8T.jpg"></li><li><img alt="Scroll image 17" src="https://image.tmdb.org/t/p/w154/7JzOmJ1fIU43I3gLHYsY8UzNzjG.jpg"></li><li><img alt="Scroll image 18" src="https://image.tmdb.org/t/p/w154/xeEw3eLeSFmJgXZzmF2Efww0q3s.jpg"></li><li><img alt="Scroll image 19" src="https://image.tmdb.org/t/p/w154/cm8TNGBGG0aBfWj0LgrESHv8tir.jpg"></li><li><img alt="Scroll image 20" src="https://image.tmdb.org/t/p/w154/z53D72EAOxGRqdr7KXXWp9dJiDe.jpg"></li></ul></div></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- service section starts -->
-    <section class="service">
-      <div class="main">
-        <div class="img">
-          <img src="images/service-banner-2.jpg" alt="" />
-        </div>
-        <div class="content">
-          <small>Salam ku dolok</small>
-          <h4>Download belom dapat dolok, belajar bersyukur dolok</h4>
-          <p>
-            <!-- Buttons -->
-            <div style="text-align:center; margin:20px;">
-              <button onclick="openPopup('movie')" class="button1 button2" style="background:#4CAF50;">🎬 Movies</button>
-              <button onclick="openPopup('tv')" class="button1 button2" style="background:#2196F3;">📺 TV Shows</button>
-            </div>
-          </p>
-          <ul class="list">
-            <li>
-              <div class="service-card">
-                <div class="img">
-                  <div class="icon">
-                    <i class="fa-solid fa-tv"></i>
-                  </div>
-                </div>
-                <div class="service-content">
-                  <h5>Enjoy cerita lamak dolok</h5>
-                  <p>
-                    Teringin rasa mok tengok cerita zaman dolok dengan anak-anak kita, even mbak dak anak buah yang sopan santun sik kurang ajar datang rumah tangga sama-sama.
-                  </p>
-                </div>
-              </div>
-            </li>
-            <hr />
-            <li>
-              <div class="service-card">
-                <div class="img">
-                  <div class="icon">
-                    <i class="fa-solid fa-video"></i>
-                  </div>
-                </div>
-                <div class="service-content">
-                  <h5>Kualiti boh riso Abang G ada pake control dibelakang takbir</h5>
-                  <p>
-                    Kualiti movie sitok nang jangan riso even subtitle nok sikpaham bahasa english pun abang boleh bantu siap nyedia pake kitakorang download terus. kelak abang ngato untuk masa hadapan.
-                  </p>
-                </div>
-              </div>
-            </li>
+          <ul class="nav-list">
+            <li class="home"><a href="/wsp-assets/welcome.html">home</a></li>
+            <li><a href="/wsp-assets/frontend/splayer-movie.html">movie</a></li>
+            <li><a href="/wsp-assets/frontend/splayer-tvshow.html">tv show</a></li>
+            <li><a href="/qrg-gif-app/admin.html">t2</a></li>
+            <li><a href="/qrg-gif-app/debug.html">t3</a></li>
+            <li><a href="/qrg-gif-app/index.html">t4</a></li>
+            <li><a href="/qrg-gif-app/test.html">t5</a></li>
+            <button class="btn">coming soon</button>
           </ul>
+          <div class="search-icon" onclick="openPopup('movie')">
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="profile-icon" onclick="document.getElementById('profileModal').style.display='flex'">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+        </nav>
+      </header>
+
+      <!-- Profile Selection Modal -->
+      <div id="profileModal" class="profile-modal">
+        <div class="profile-modal-content">
+          <h2>Who's watching?</h2>
+          <div class="profiles">
+            <div class="profile" onclick="selectProfile('User 1')">
+              <img src="images/logo.svg" alt="Profile 1">
+              <p>User 1</p>
+            </div>
+            <div class="profile" onclick="selectProfile('User 2')">
+              <img src="images/logo.svg" alt="Profile 2">
+              <p>User 2</p>
+            </div>
+            <div class="profile" onclick="selectProfile('Kids')">
+              <img src="images/logo.svg" alt="Kids">
+              <p>Kids</p>
+            </div>
+            <div class="profile add-profile" onclick="addProfile()">
+              <i class="fas fa-plus"></i>
+              <p>Add Profile</p>
+            </div>
+          </div>
+          <button class="manage-profiles-btn">Manage Profiles</button>
         </div>
       </div>
-    </section>
 
-    <!-- top movie section start  -->
-    <section class="top-movie same">
-      <div class="header">
-        <small>online streaming</small>
-        <h4>Top Rated Movies</h4>
-      </div>
-      <div class="top-movie-main">
-        <div class="buttons">
-          <button onclick="filterByGenre('all')">All</button>
-          <button onclick="filterByGenre('action')">Action</button>
-          <button onclick="filterByGenre('comedy')">Comedy</button>
-          <button onclick="filterByGenre('drama')">Drama</button>
-          <button onclick="filterByGenre('horror')">Horror</button>
-          <button onclick="filterByGenre('sci-fi')">Sci-Fi</button>
-        </div>
-        <div class="movie-card">
-          <article class="card__container">
-            <div class="card mobile" data-movie-id="sonic" data-genre="action" data-movie-title="Sonic" style="--img: url(images/movie-1.png);" tabindex="0" onclick="searchAndPlayMovie('Sonic')">
-              <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('sonic')">
-                <i class="fas fa-heart"></i>
-              </div>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="main">
+          <div class="content">
+            <p>Ctax Film</p>
+            <h1>Watch movies and TV shows for free, in high quality!</h1>
+            <div class="watch-btn">
+              <button href="#"><i class="fa-solid fa-play"></i>Watch Now</button>
+              <div class="image-scroller-container"><div class="scroller ">
+                <ul>
+                  <li><img alt="Scroll image 1" src="https://image.tmdb.org/t/p/w154/yzqHt4m1SeY9FbPrfZ0C2Hi9x1s.jpg"></li>
+                  <li><img alt="Scroll image 2" src="https://image.tmdb.org/t/p/w154/dbe1zKVKNBIczdmRcm7jxEphYLz.jpg"></li><li><img alt="Scroll image 3" src="https://image.tmdb.org/t/p/w154/7SHFZKfd270y47sXN2WsURUO3ml.jpg"></li><li><img alt="Scroll image 4" src="https://image.tmdb.org/t/p/w154/yvirUYrva23IudARHn3mMGVxWqM.jpg"></li><li><img alt="Scroll image 5" src="https://image.tmdb.org/t/p/w154/fWVSwgjpT2D78VUh6X8UBd2rorW.jpg"></li><li><img alt="Scroll image 6" src="https://image.tmdb.org/t/p/w154/7JzOmJ1fIU43I3gLHYsY8UzNzjG.jpg"></li><li><img alt="Scroll image 7" src="https://image.tmdb.org/t/p/w154/bYe2ZjUhb4Kje0BpWE6kN34u2hv.jpg"></li><li><img alt="Scroll image 8" src="https://image.tmdb.org/t/p/w154/fZlNXEHZsBp7unqw009MeBbMv87.jpg"></li><li><img alt="Scroll image 9" src="https://image.tmdb.org/t/p/w154/2Yc8Kl2ldPpDzLrG2M5Ddv62FXB.jpg"></li><li><img alt="Scroll image 10" src="https://image.tmdb.org/t/p/w154/w46Vw536HwNnEzOa7J24YH9DPRS.jpg"></li><li><img alt="Scroll image 11" src="https://image.tmdb.org/t/p/w154/yzqHt4m1SeY9FbPrfZ0C2Hi9x1s.jpg"></li><li><img alt="Scroll image 12" src="https://image.tmdb.org/t/p/w154/dbe1zKVKNBIczdmRcm7jxEphYLz.jpg"></li><li><img alt="Scroll image 13" src="https://image.tmdb.org/t/p/w154/7SHFZKfd270y47sXN2WsURUO3ml.jpg"></li><li><img alt="Scroll image 14" src="https://image.tmdb.org/t/p/w154/yvirUYrva23IudARHn3mMGVxWqM.jpg"></li><li><img alt="Scroll image 15" src="https://image.tmdb.org/t/p/w154/fWVSwgjpT2D78VUh6X8UBd2rorW.jpg"></li><li><img alt="Scroll image 16" src="https://image.tmdb.org/t/p/w154/7JzOmJ1fIU43I3gLHYsY8UzNzjG.jpg"></li><li><img alt="Scroll image 17" src="https://image.tmdb.org/t/p/w154/bYe2ZjUhb4Kje0BpWE6kN34u2hv.jpg"></li><li><img alt="Scroll image 18" src="https://image.tmdb.org/t/p/w154/fZlNXEHZsBp7unqw009MeBbMv87.jpg"></li><li><img alt="Scroll image 19" src="https://image.tmdb.org/t/p/w154/2Yc8Kl2ldPpDzLrG2M5Ddv62FXB.jpg"></li><li><img alt="Scroll image 20" src="https://image.tmdb.org/t/p/w154/w46Vw536HwNnEzOa7J24YH9DPRS.jpg"></li></ul></div><div class="scroller scroller-reverse"><ul><li><img alt="Scroll image 1" src="https://image.tmdb.org/t/p/w154/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg"></li><li><img alt="Scroll image 2" src="https://image.tmdb.org/t/p/w154/3bhkrj58Vtu7enYsRolD1fZdja1.jpg"></li><li><img alt="Scroll image 3" src="https://image.tmdb.org/t/p/w154/hek3koDUyRQk7FIhPXsa6mT2Zc3.jpg"></li><li><img alt="Scroll image 4" src="https://image.tmdb.org/t/p/w154/sF1U4EUQS8YHUYjNl3pMGNIQyr0.jpg"></li><li><img alt="Scroll image 5" src="https://image.tmdb.org/t/p/w154/ow3wq89wM8qd5X7hWKxiRfsFf9C.jpg"></li><li><img alt="Scroll image 6" src="https://image.tmdb.org/t/p/w154/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg"></li><li><img alt="Scroll image 7" src="https://image.tmdb.org/t/p/w154/qJ2tW6WMUDux911r6m7haRef0WH.jpg"></li><li><img alt="Scroll image 8" src="https://image.tmdb.org/t/p/w154/2CAL2433ZeIihfX1Hb2139CX0pW.jpg"></li><li><img alt="Scroll image 9" src="https://image.tmdb.org/t/p/w154/o0lO84GI7qrG6XFvtsPOSV7CTNa.jpg"></li><li><img alt="Scroll image 10" src="https://image.tmdb.org/t/p/w154/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg"></li><li><img alt="Scroll image 11" src="https://image.tmdb.org/t/p/w154/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg"></li><li><img alt="Scroll image 12" src="https://image.tmdb.org/t/p/w154/3bhkrj58Vtu7enYsRolD1fZdja1.jpg"></li><li><img alt="Scroll image 13" src="https://image.tmdb.org/t/p/w154/hek3koDUyRQk7FIhPXsa6mT2Zc3.jpg"></li><li><img alt="Scroll image 14" src="https://image.tmdb.org/t/p/w154/sF1U4EUQS8YHUYjNl3pMGNIQyr0.jpg"></li><li><img alt="Scroll image 15" src="https://image.tmdb.org/t/p/w154/ow3wq89wM8qd5X7hWKxiRfsFf9C.jpg"></li><li><img alt="Scroll image 16" src="https://image.tmdb.org/t/p/w154/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg"></li><li><img alt="Scroll image 17" src="https://image.tmdb.org/t/p/w154/qJ2tW6WMUDux911r6m7haRef0WH.jpg"></li><li><img alt="Scroll image 18" src="https://image.tmdb.org/t/p/w154/2CAL2433ZeIihfX1Hb2139CX0pW.jpg"></li><li><img alt="Scroll image 19" src="https://image.tmdb.org/t/p/w154/o0lO84GI7qrG6XFvtsPOSV7CTNa.jpg"></li><li><img alt="Scroll image 20" src="https://image.tmdb.org/t/p/w154/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg"></li></ul></div><div class="scroller "><ul><li><img alt="Scroll image 1" src="https://image.tmdb.org/t/p/w154/wobVTa99eW0ht6c1rNNzLkazPtR.jpg"></li><li><img alt="Scroll image 2" src="https://image.tmdb.org/t/p/w154/yzqHt4m1SeY9FbPrfZ0C2Hi9x1s.jpg"></li><li><img alt="Scroll image 3" src="https://image.tmdb.org/t/p/w154/98n5HnCJ5LnXKIMNP9SBfVNyxCE.jpg"></li><li><img alt="Scroll image 4" src="https://image.tmdb.org/t/p/w154/evbguUd1BwExQgXMjG9n9AHMQpN.jpg"></li><li><img alt="Scroll image 5" src="https://image.tmdb.org/t/p/w154/chpWmskl3aKm1aTZqUHRCtviwPy.jpg"></li><li><img alt="Scroll image 6" src="https://image.tmdb.org/t/p/w154/izYZGeOHhPWiga8Hb5P4JYfcH8T.jpg"></li><li><img alt="Scroll image 7" src="https://image.tmdb.org/t/p/w154/7JzOmJ1fIU43I3gLHYsY8UzNzjG.jpg"></li><li><img alt="Scroll image 8" src="https://image.tmdb.org/t/p/w154/xeEw3eLeSFmJgXZzmF2Efww0q3s.jpg"></li><li><img alt="Scroll image 9" src="https://image.tmdb.org/t/p/w154/cm8TNGBGG0aBfWj0LgrESHv8tir.jpg"></li><li><img alt="Scroll image 10" src="https://image.tmdb.org/t/p/w154/z53D72EAOxGRqdr7KXXWp9dJiDe.jpg"></li><li><img alt="Scroll image 11" src="https://image.tmdb.org/t/p/w154/wobVTa99eW0ht6c1rNNzLkazPtR.jpg"></li><li><img alt="Scroll image 12" src="https://image.tmdb.org/t/p/w154/yzqHt4m1SeY9FbPrfZ0C2Hi9x1s.jpg"></li><li><img alt="Scroll image 13" src="https://image.tmdb.org/t/p/w154/98n5HnCJ5LnXKIMNP9SBfVNyxCE.jpg"></li><li><img alt="Scroll image 14" src="https://image.tmdb.org/t/p/w154/evbguUd1BwExQgXMjG9n9AHMQpN.jpg"></li><li><img alt="Scroll image 15" src="https://image.tmdb.org/t/p/w154/chpWmskl3aKm1aTZqUHRCtviwPy.jpg"></li><li><img alt="Scroll image 16" src="https://image.tmdb.org/t/p/w154/izYZGeOHhPWiga8Hb5P4JYfcH8T.jpg"></li><li><img alt="Scroll image 17" src="https://image.tmdb.org/t/p/w154/7JzOmJ1fIU43I3gLHYsY8UzNzjG.jpg"></li><li><img alt="Scroll image 18" src="https://image.tmdb.org/t/p/w154/xeEw3eLeSFmJgXZzmF2Efww0q3s.jpg"></li><li><img alt="Scroll image 19" src="https://image.tmdb.org/t/p/w154/cm8TNGBGG0aBfWj0LgrESHv8tir.jpg"></li><li><img alt="Scroll image 20" src="https://image.tmdb.org/t/p/w154/z53D72EAOxGRqdr7KXXWp9dJiDe.jpg"></li></ul></div></div>
             </div>
-            <div class="card mobile" data-movie-id="morbius" data-genre="action" data-movie-title="Morbius" style="--img: url(images/movie-2.png);" tabindex="0" onclick="searchAndPlayMovie('Morbius')">
-              <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('morbius')">
-                <i class="fas fa-heart"></i>
-              </div>
-            </div>
-            <div class="card mobile" data-movie-title="Adam Project" style="--img: url(images/movie-3.png);" tabindex="0" onclick="searchAndPlayMovie('Adam Project')"></div>
-            <div class="card mobile" data-movie-title="Free Guy" style="--img: url(images/movie-4.png);" tabindex="0" onclick="searchAndPlayMovie('Free Guy')"></div>
-            <div class="card mobile" data-movie-title="Batman" style="--img: url(images/movie-5.png);" tabindex="0" onclick="searchAndPlayMovie('Batman')"></div>
-            <div class="card mobile" data-movie-title="Uncharted" style="--img: url(images/movie-6.png);" tabindex="0" onclick="searchAndPlayMovie('Uncharted')"></div>
-            <div class="card mobile" data-movie-title="Death On The Nile" style="--img: url(images/movie-7.png);" tabindex="0" onclick="searchAndPlayMovie('Death On The Nile')"></div>
-            <div class="card mobile" data-movie-title="Kingsman" style="--img: url(images/movie-8.png);" tabindex="0" onclick="searchAndPlayMovie('Kingsman')"></div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- tvs series section starts  -->
-    <section class="tv-series same">
-      <div class="header">
-        <small>best tv series</small>
-        <h4>World Best TV Series</h4>
-      </div>
-      <div class="movie-card">
-        <article class="card__container">
-          <div class="card mobile" data-movie-title="Moon Knight" style="--img: url(images/series-1.png);" tabindex="0" onclick="searchAndPlayMovie('Moon Knight')"></div>
-          <div class="card mobile" data-movie-title="Halo" style="--img: url(images/series-2.png);" tabindex="0" onclick="searchAndPlayMovie('Halo')"></div>
-          <div class="card mobile" data-movie-title="Vikings Valhalla" style="--img: url(images/series-3.png);" tabindex="0" onclick="searchAndPlayMovie('Vikings Valhalla')"></div>
-          <div class="card mobile" data-movie-title="Money Heist" style="--img: url(images/series-4.png);" tabindex="0" onclick="searchAndPlayMovie('Money Heist')"></div>
-        </article>
-      </div>
-    </section>
-
-    <!-- Recommendations section -->
-    <section class="recommendations same">
-      <div class="header">
-        <small>recommended for you</small>
-        <h4>Because you watched Sonic</h4>
-      </div>
-      <div class="movie-card">
-        <article class="card__container">
-          <div class="card mobile" data-movie-id="sonic2" data-genre="action" data-movie-title="Sonic 2" style="--img: url(images/movie-1.png);" tabindex="0" onclick="searchAndPlayMovie('Sonic 2')">
-            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('sonic2')">
-              <i class="fas fa-heart"></i>
-            </div>
-          </div>
-          <div class="card mobile" data-movie-id="spiderman" data-genre="action" data-movie-title="Spider-Man" style="--img: url(images/movie-3.png);" tabindex="0" onclick="searchAndPlayMovie('Spider-Man')">
-            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('spiderman')">
-              <i class="fas fa-heart"></i>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- Trending Now section -->
-    <section class="trending same">
-      <div class="header">
-        <small>trending now</small>
-        <h4>Popular This Week</h4>
-      </div>
-      <div class="movie-card">
-        <article class="card__container">
-          <div class="card mobile" data-movie-id="batman" data-genre="action" data-movie-title="The Batman" style="--img: url(images/movie-5.png);" tabindex="0" onclick="searchAndPlayMovie('The Batman')">
-            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('batman')">
-              <i class="fas fa-heart"></i>
-            </div>
-          </div>
-          <div class="card mobile" data-movie-id="uncharted" data-genre="action" data-movie-title="Uncharted" style="--img: url(images/movie-6.png);" tabindex="0" onclick="searchAndPlayMovie('Uncharted')">
-            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('uncharted')">
-              <i class="fas fa-heart"></i>
-            </div>
-          </div>
-          <div class="card mobile" data-movie-id="kingsman" data-genre="action" data-movie-title="Kingsman" style="--img: url(images/movie-8.png);" tabindex="0" onclick="searchAndPlayMovie('Kingsman')">
-            <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('kingsman')">
-              <i class="fas fa-heart"></i>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- trial section starts  -->
-    <section class="trial">
-      <div class="main">
-        <div class="content">
-          <h4>Mok dengar khabar berita ka subscribe ajak abang ada website personal siger</h4>
-          <p>Engkah jak email kelak ada nyusul berita harian</p>
-        </div>
-        <div class="form">
-          <div class="input">
-            <input type="email" placeholder="Enter Your Email">
-            <button> get started</button>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-          <!-- Buttons -->
+      <!-- service section starts -->
+      <section class="service">
+        <div class="main">
+          <div class="img">
+            <img src="images/service-banner-2.jpg" alt="" />
+          </div>
+          <div class="content">
+            <small>Salam ku dolok</small>
+            <h4>Download belom dapat dolok, belajar bersyukur dolok</h4>
+            <p>
+              <!-- Buttons -->
               <div style="text-align:center; margin:20px;">
                 <button onclick="openPopup('movie')" class="button1 button2" style="background:#4CAF50;">🎬 Movies</button>
                 <button onclick="openPopup('tv')" class="button1 button2" style="background:#2196F3;">📺 TV Shows</button>
               </div>
-              
-              <!-- Overlay -->
-              <div id="popupOverlay" onclick="closePopup()"></div>
-              
-              <!-- Popup Search -->
-              <div id="popup">
-                <h3 id="popupTitle">Search</h3>
-                <input type="text" id="searchBox" placeholder="🔎 Type a title..." onkeyup="searchTMDB()">
-                <div id="results"></div>
-                
-                <!-- Close button now styled same as others -->
-                <button class="button1 button2" style="background:#f44336;" onclick="closePopup()">❌ Close</button>
-              </div>
-              
-              <!-- Video Player -->
-              <div id="videoContainer" style="position:relative; padding-bottom:56.25%; height:0; display:none; margin-top:20px;">
-                <div id="videoLoading" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);color:#fff;display:none;align-items:center;justify-content:center;z-index:2;">
-                  <span>Loading video...</span>
-                </div>
-                <iframe id="videoFrame"
-                        style="position:absolute; top:0; left:0; width:100%; height:100%;"
-                        frameborder="0"
-                        allowfullscreen
-                        allow="encrypted-media">
-                </iframe>
-              </div>
-              
-              <!-- JavaScript for Popup and TMDB Search -->
-               <script>
-              let apiKey = "b9571479231e6a103f8f10a0b2525d63"; // ✅ Your TMDB API key
-              let searchType = "movie";
-              let selectedTvId = null;
-
-              function openPopup(type) {
-                searchType = type;
-                document.getElementById("popupTitle").innerText = 
-                  (type === "movie") ? "Search Movies" : "Search TV Shows";
-                document.getElementById("popup").style.display = "block";
-                document.getElementById("popupOverlay").style.display = "block";
-                document.getElementById("results").innerHTML = "";
-                document.getElementById("searchBox").value = "";
-                document.getElementById("searchBox").focus();
-                if (document.getElementById("seasonEpisodeOptions")) {
-                  document.getElementById("seasonEpisodeOptions").style.display = "none";
-                }
-              }
-              
-              function closePopup() {
-                document.getElementById("popup").style.display = "none";
-                document.getElementById("popupOverlay").style.display = "none";
-                if (document.getElementById("seasonEpisodeOptions")) {
-                  document.getElementById("seasonEpisodeOptions").style.display = "none";
-                }
-              }
-              
-              async function searchTMDB() {
-                let query = document.getElementById("searchBox").value;
-                if (query.length < 2) return;
-              
-                let url = `https://api.themoviedb.org/3/search/${searchType}?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
-                let response = await fetch(url);
-                let data = await response.json();
-              
-                let resultsDiv = document.getElementById("results");
-                resultsDiv.innerHTML = "";
-              
-                data.results.forEach(item => {
-                  let title = (searchType === "movie") ? item.title : item.name;
-                  let release = (item.release_date || item.first_air_date || "").split("-")[0];
-                  let id = item.id;
-              
-                  let div = document.createElement("div");
-                  div.innerHTML = `${title} (${release || "N/A"})`;
-                  div.onclick = () => selectItem(id);
-                  resultsDiv.appendChild(div);
-                });
-              }
-              
-              function selectItem(id) {
-                if (searchType === "movie") {
-                  closePopup();
-                  const url = `https://vidnest.fun/movie/${id}`;
-                  document.getElementById("videoFrame").src = url;
-                  document.getElementById("videoContainer").style.display = "block";
-                } else {
-                  // Show season/episode options for TV
-                  selectedTvId = id;
-                  let optionsDiv = document.getElementById("seasonEpisodeOptions");
-                  if (!optionsDiv) {
-                    optionsDiv = document.createElement("div");
-                    optionsDiv.id = "seasonEpisodeOptions";
-                    optionsDiv.style.marginTop = "10px";
-                    optionsDiv.innerHTML = `
-                      <label>Season: <input type="number" id="seasonInput" min="1" value="1" style="width:60px;"></label>
-                      <label>Episode: <input type="number" id="episodeInput" min="1" value="1" style="width:60px;"></label>
-                      <button onclick="confirmSeasonEpisode()" class="button1 button2" style="background:#2196F3;">Go</button>
-                    `;
-                    document.getElementById("popup").appendChild(optionsDiv);
-                  }
-                  optionsDiv.style.display = "block";
-                }
-              }
-              
-              function confirmSeasonEpisode() {
-                const season = document.getElementById("seasonInput").value;
-                const episode = document.getElementById("episodeInput").value;
-                closePopup();
-                const url = `https://vidnest.fun/tv/${selectedTvId}/${season}/${episode}`;
-                document.getElementById("videoFrame").src = url;
-                document.getElementById("videoContainer").style.display = "block";
-              }
-              </script>              // Split into modules:
-              /src
-                /auth
-                  - EmailAuth.js
-                  - PinAuth.js
-                  - OAuthHandlers.js
-                /components
-                  - LoginForm.js
-                  - Keypad.js
-                  - PinDisplay.js
-                /services
-                  - supabase.js
-                  - session.js
-                /utils
-                  - validation.js
-                  - animations.js
-
-    <!-- Footer -->
-    <footer>
-      <div class="main">
-        <div class="footer-top">
-          <nav>
-            <div class="logo">
-              <img src="images/logo.svg" alt="Footer Logo" />
-            </div>
+            </p>
             <ul class="list">
-              <li><a href="">home</a></li>
-              <li><a href="">movie</a></li>
-              <li><a href="">tv show</a></li>
-              <li><a href="">pricing</a></li>
+              <li>
+                <div class="service-card">
+                  <div class="img">
+                    <div class="icon">
+                      <i class="fa-solid fa-tv"></i>
+                    </div>
+                  </div>
+                  <div class="service-content">
+                    <h5>Enjoy cerita lamak dolok</h5>
+                    <p>
+                      Teringin rasa mok tengok cerita zaman dolok dengan anak-anak kita, even mbak dak anak buah yang sopan santun sik kurang ajar datang rumah tangga sama-sama.
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <hr />
+              <li>
+                <div class="service-card">
+                  <div class="img">
+                    <div class="icon">
+                      <i class="fa-solid fa-video"></i>
+                    </div>
+                  </div>
+                  <div class="service-content">
+                    <h5>Kualiti boh riso Abang G ada pake control dibelakang takbir</h5>
+                    <p>
+                      Kualiti movie sitok nang jangan riso even subtitle nok sikpaham bahasa english pun abang boleh bantu siap nyedia pake kitakorang download terus. kelak abang ngato untuk masa hadapan.
+                    </p>
+                  </div>
+                </div>
+              </li>
             </ul>
-          </nav>
-          <hr />
-          <div class="links">
-            <div class="text-links">
-              <a href="other.html#faq">faq</a>
-              <a href="other.html#help-center">help center</a>
-              <a href="other.html#terms-of-use">terms of use</a>
-              <a href="other.html#privacy">privacy</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- top movie section start  -->
+      <section class="top-movie same">
+        <div class="header">
+          <small>online streaming</small>
+          <h4>Top Rated Movies</h4>
+        </div>
+        <div class="top-movie-main">
+          <div class="buttons">
+            <button onclick="filterByGenre('all')">All</button>
+            <button onclick="filterByGenre('action')">Action</button>
+            <button onclick="filterByGenre('comedy')">Comedy</button>
+            <button onclick="filterByGenre('drama')">Drama</button>
+            <button onclick="filterByGenre('horror')">Horror</button>
+            <button onclick="filterByGenre('sci-fi')">Sci-Fi</button>
+          </div>
+          <div class="movie-card">
+            <article class="card__container">
+              <div class="card mobile" data-movie-id="sonic" data-genre="action" data-movie-title="Sonic" style="--img: url(images/movie-1.png);" tabindex="0" onclick="searchAndPlayMovie('Sonic')">
+                <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('sonic')">
+                  <i class="fas fa-heart"></i>
+                </div>
+              </div>
+              <div class="card mobile" data-movie-id="morbius" data-genre="action" data-movie-title="Morbius" style="--img: url(images/movie-2.png);" tabindex="0" onclick="searchAndPlayMovie('Morbius')">
+                <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('morbius')">
+                  <i class="fas fa-heart"></i>
+                </div>
+              </div>
+              <div class="card mobile" data-movie-title="Adam Project" style="--img: url(images/movie-3.png);" tabindex="0" onclick="searchAndPlayMovie('Adam Project')"></div>
+              <div class="card mobile" data-movie-title="Free Guy" style="--img: url(images/movie-4.png);" tabindex="0" onclick="searchAndPlayMovie('Free Guy')"></div>
+              <div class="card mobile" data-movie-title="Batman" style="--img: url(images/movie-5.png);" tabindex="0" onclick="searchAndPlayMovie('Batman')"></div>
+              <div class="card mobile" data-movie-title="Uncharted" style="--img: url(images/movie-6.png);" tabindex="0" onclick="searchAndPlayMovie('Uncharted')"></div>
+              <div class="card mobile" data-movie-title="Death On The Nile" style="--img: url(images/movie-7.png);" tabindex="0" onclick="searchAndPlayMovie('Death On The Nile')"></div>
+              <div class="card mobile" data-movie-title="Kingsman" style="--img: url(images/movie-8.png);" tabindex="0" onclick="searchAndPlayMovie('Kingsman')"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- tvs series section starts  -->
+      <section class="tv-series same">
+        <div class="header">
+          <small>best tv series</small>
+          <h4>World Best TV Series</h4>
+        </div>
+        <div class="movie-card">
+          <article class="card__container">
+            <div class="card mobile" data-movie-title="Moon Knight" style="--img: url(images/series-1.png);" tabindex="0" onclick="searchAndPlayMovie('Moon Knight')"></div>
+            <div class="card mobile" data-movie-title="Halo" style="--img: url(images/series-2.png);" tabindex="0" onclick="searchAndPlayMovie('Halo')"></div>
+            <div class="card mobile" data-movie-title="Vikings Valhalla" style="--img: url(images/series-3.png);" tabindex="0" onclick="searchAndPlayMovie('Vikings Valhalla')"></div>
+            <div class="card mobile" data-movie-title="Money Heist" style="--img: url(images/series-4.png);" tabindex="0" onclick="searchAndPlayMovie('Money Heist')"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Recommendations section -->
+      <section class="recommendations same">
+        <div class="header">
+          <small>recommended for you</small>
+          <h4>Because you watched Sonic</h4>
+        </div>
+        <div class="movie-card">
+          <article class="card__container">
+            <div class="card mobile" data-movie-id="sonic2" data-genre="action" data-movie-title="Sonic 2" style="--img: url(images/movie-1.png);" tabindex="0" onclick="searchAndPlayMovie('Sonic 2')">
+              <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('sonic2')">
+                <i class="fas fa-heart"></i>
+              </div>
             </div>
-            <div class="social-links">
-              <a href=""><i class="fa-brands fa-facebook"></i></a>
-              <a href=""><i class="fa-brands fa-twitter"></i></a>
-              <a href=""><i class="fa-brands fa-linkedin"></i></a>
-              <a href=""><i class="fa-brands fa-instagram"></i></a>
+            <div class="card mobile" data-movie-id="spiderman" data-genre="action" data-movie-title="Spider-Man" style="--img: url(images/movie-3.png);" tabindex="0" onclick="searchAndPlayMovie('Spider-Man')">
+              <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('spiderman')">
+                <i class="fas fa-heart"></i>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Trending Now section -->
+      <section class="trending same">
+        <div class="header">
+          <small>trending now</small>
+          <h4>Popular This Week</h4>
+        </div>
+        <div class="movie-card">
+          <article class="card__container">
+            <div class="card mobile" data-movie-id="batman" data-genre="action" data-movie-title="The Batman" style="--img: url(images/movie-5.png);" tabindex="0" onclick="searchAndPlayMovie('The Batman')">
+              <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('batman')">
+                <i class="fas fa-heart"></i>
+              </div>
+            </div>
+            <div class="card mobile" data-movie-id="uncharted" data-genre="action" data-movie-title="Uncharted" style="--img: url(images/movie-6.png);" tabindex="0" onclick="searchAndPlayMovie('Uncharted')">
+              <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('uncharted')">
+                <i class="fas fa-heart"></i>
+              </div>
+            </div>
+            <div class="card mobile" data-movie-id="kingsman" data-genre="action" data-movie-title="Kingsman" style="--img: url(images/movie-8.png);" tabindex="0" onclick="searchAndPlayMovie('Kingsman')">
+              <div class="watchlist-btn" onclick="event.stopPropagation(); toggleWatchlist('kingsman')">
+                <i class="fas fa-heart"></i>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- trial section starts  -->
+      <section class="trial">
+        <div class="main">
+          <div class="content">
+            <h4>Mok dengar khabar berita ka subscribe ajak abang ada website personal siger</h4>
+            <p>Engkah jak email kelak ada nyusul berita harian</p>
+          </div>
+          <div class="form">
+            <div class="input">
+              <input type="email" placeholder="Enter Your Email">
+              <button> get started</button>
             </div>
           </div>
         </div>
-        <div class="footer-bottom">
-          <p>&#169; 2022 Ctaxnagomi. All Rights Reserved</p>
-        </div>
-      </div>
-    </footer>
+      </section>
 
-    <button class="back-to-top"><i class="fa-solid fa-chevron-up"></i></button>
+            <!-- Buttons -->
+                <div style="text-align:center; margin:20px;">
+                  <button onclick="openPopup('movie')" class="button1 button2" style="background:#4CAF50;">🎬 Movies</button>
+                  <button onclick="openPopup('tv')" class="button1 button2" style="background:#2196F3;">📺 TV Shows</button>
+                </div>
+                
+                <!-- Overlay -->
+                <div id="popupOverlay" onclick="closePopup()"></div>
+                
+                <!-- Popup Search -->
+                <div id="popup">
+                  <h3 id="popupTitle">Search</h3>
+                  <input type="text" id="searchBox" placeholder="🔎 Type a title..." onkeyup="searchTMDB()">
+                  <div id="results"></div>
+                  
+                  <!-- Close button now styled same as others -->
+                  <button class="button1 button2" style="background:#f44336;" onclick="closePopup()">❌ Close</button>
+                </div>
+                
+                <!-- Video Player -->
+                <div id="videoContainer" style="position:relative; padding-bottom:56.25%; height:0; display:none; margin-top:20px;">
+                  <div id="videoLoading" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);color:#fff;display:none;align-items:center;justify-content:center;z-index:2;">
+                    <span>Loading video...</span>
+                  </div>
+                  <iframe id="videoFrame"
+                          style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                          frameborder="0"
+                          allowfullscreen
+                          allow="encrypted-media">
+                  </iframe>
+                </div>
+                
+                <!-- JavaScript for Popup and TMDB Search -->
+                <script>
+                let apiKey = "b9571479231e6a103f8f10a0b2525d63"; // ✅ Your TMDB API key
+                let searchType = "movie";
+                let selectedTvId = null;
 
-    <!-- Scripts -->
-    <script src="js/navbar.js"></script>
-    <script src="js/carousel.js"></script>
-    <script src="js/profile-watchlist.js"></script>
-    <script src="js/search-player.js"></script>
-  </body>
+                function openPopup(type) {
+                  searchType = type;
+                  document.getElementById("popupTitle").innerText = 
+                    (type === "movie") ? "Search Movies" : "Search TV Shows";
+                  document.getElementById("popup").style.display = "block";
+                  document.getElementById("popupOverlay").style.display = "block";
+                  document.getElementById("results").innerHTML = "";
+                  document.getElementById("searchBox").value = "";
+                  document.getElementById("searchBox").focus();
+                  if (document.getElementById("seasonEpisodeOptions")) {
+                    document.getElementById("seasonEpisodeOptions").style.display = "none";
+                  }
+                }
+                
+                function closePopup() {
+                  document.getElementById("popup").style.display = "none";
+                  document.getElementById("popupOverlay").style.display = "none";
+                  if (document.getElementById("seasonEpisodeOptions")) {
+                    document.getElementById("seasonEpisodeOptions").style.display = "none";
+                  }
+                }
+                
+                async function searchTMDB() {
+                  let query = document.getElementById("searchBox").value;
+                  if (query.length < 2) return;
+                
+                  let url = `https://api.themoviedb.org/3/search/${searchType}?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
+                  let response = await fetch(url);
+                  let data = await response.json();
+                
+                  let resultsDiv = document.getElementById("results");
+                  resultsDiv.innerHTML = "";
+                
+                  data.results.forEach(item => {
+                    let title = (searchType === "movie") ? item.title : item.name;
+                    let release = (item.release_date || item.first_air_date || "").split("-")[0];
+                    let id = item.id;
+                
+                    let div = document.createElement("div");
+                    div.innerHTML = `${title} (${release || "N/A"})`;
+                    div.onclick = () => selectItem(id);
+                    resultsDiv.appendChild(div);
+                  });
+                }
+                
+                function selectItem(id) {
+                  if (searchType === "movie") {
+                    closePopup();
+                    const url = `https://vidnest.fun/movie/${id}`;
+                    document.getElementById("videoFrame").src = url;
+                    document.getElementById("videoContainer").style.display = "block";
+                  } else {
+                    // Show season/episode options for TV
+                    selectedTvId = id;
+                    let optionsDiv = document.getElementById("seasonEpisodeOptions");
+                    if (!optionsDiv) {
+                      optionsDiv = document.createElement("div");
+                      optionsDiv.id = "seasonEpisodeOptions";
+                      optionsDiv.style.marginTop = "10px";
+                      optionsDiv.innerHTML = `
+                        <label>Season: <input type="number" id="seasonInput" min="1" value="1" style="width:60px;"></label>
+                        <label>Episode: <input type="number" id="episodeInput" min="1" value="1" style="width:60px;"></label>
+                        <button onclick="confirmSeasonEpisode()" class="button1 button2" style="background:#2196F3;">Go</button>
+                      `;
+                      document.getElementById("popup").appendChild(optionsDiv);
+                    }
+                    optionsDiv.style.display = "block";
+                  }
+                }
+                
+                function confirmSeasonEpisode() {
+                  const season = document.getElementById("seasonInput").value;
+                  const episode = document.getElementById("episodeInput").value;
+                  closePopup();
+                  const url = `https://vidnest.fun/tv/${selectedTvId}/${season}/${episode}`;
+                  document.getElementById("videoFrame").src = url;
+                  document.getElementById("videoContainer").style.display = "block";
+                }
+                </script> 
+                  <!-- Footer -->
+                  <footer>
+                    <div class="main">
+                      <div class="footer-top">
+                        <nav>
+                          <div class="logo">
+                            <img src="images/logo.svg" alt="Footer Logo" />
+                          </div>
+                          <ul class="list">
+                            <li><a href="">home</a></li>
+                            <li><a href="">movie</a></li>
+                            <li><a href="">tv show</a></li>
+                            <li><a href="">pricing</a></li>
+                          </ul>
+                        </nav>
+                        <hr />
+                        <div class="links">
+                          <div class="text-links">
+                            <a href="other.html#faq">faq</a>
+                            <a href="other.html#help-center">help center</a>
+                            <a href="other.html#terms-of-use">terms of use</a>
+                            <a href="other.html#privacy">privacy</a>
+                          </div>
+                          <div class="social-links">
+                            <a href=""><i class="fa-brands fa-facebook"></i></a>
+                            <a href=""><i class="fa-brands fa-twitter"></i></a>
+                            <a href=""><i class="fa-brands fa-linkedin"></i></a>
+                            <a href=""><i class="fa-brands fa-instagram"></i></a>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="footer-bottom">
+                        <p>&#169; 2022 Ctaxnagomi. All Rights Reserved</p>
+                      </div>
+                    </div>
+                  </footer>
+
+                  <button class="back-to-top"><i class="fa-solid fa-chevron-up"></i></button>
+
+      <!-- Scripts -->
+      <script src="js/navbar.js"></script>
+      <script src="js/carousel.js"></script>
+      <script src="js/profile-watchlist.js"></script>
+      <script src="js/search-player.js"></script>
+    </body>
 </html>
